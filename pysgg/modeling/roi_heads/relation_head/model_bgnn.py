@@ -243,11 +243,38 @@ class LearnableRelatednessGating(nn.Module):
         super(LearnableRelatednessGating, self).__init__()
         cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.BGNN_MODULE.LEARNABLE_SCALING_WEIGHT
         self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
-        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=False)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
 
     def forward(self, relness):
         relness = torch.clamp(self.alpha * relness - self.alpha * self.beta, min=0, max=1.0)
         return relness
+    
+
+class SigmoidLearnableRelatednessGating(nn.Module):
+    def __init__(self) -> None:
+        super(SigmoidLearnableRelatednessGating, self).__init__()
+        cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.BGNN_MODULE.LEARNABLE_SCALING_WEIGHT
+        self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, relness):
+        relness = self.alpha * (relness - self.beta)
+        relness = self.sigmoid(relness)
+        return torch.clamp(relness, min=0, max=1.0)
+    
+
+class PolinomialLearnableRelatednessGating(nn.Module):
+    def __init__(self) -> None:
+        super(PolinomialLearnableRelatednessGating, self).__init__()
+        cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.BGNN_MODULE.LEARNABLE_SCALING_WEIGHT
+        self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
+    
+    def forward(self, relness):
+        t = torch.clamp(self.alpha * (relness - self.beta), 0, 1)
+        return t * t * (3 - 2 * t)
+
 
 
 class BGNNContext(nn.Module):
@@ -350,6 +377,14 @@ class BGNNContext(nn.Module):
             if self.relness_score_recalibration_method == "learnable_scaling":
                 self.learnable_relness_score_gating_recalibration = (
                     LearnableRelatednessGating()
+                )
+            elif self.relness_score_recalibration_method == "sigmoid_scaling":
+                self.learnable_relness_score_gating_recalibration = (
+                    SigmoidLearnableRelatednessGating()
+                )
+            elif self.relness_score_recalibration_method == "polynomial_scaling":
+                self.learnable_relness_score_gating_recalibration = (
+                    PolinomialLearnableRelatednessGating()
                 )
             elif self.relness_score_recalibration_method == "minmax":
                 self.min_relness = nn.Parameter(
@@ -509,8 +544,7 @@ class BGNNContext(nn.Module):
             each_img_relness = self.ranking_minmax_recalibration(
                 each_img_relness, selected_rel_prop_pairs_idx
             )
-        elif self.relness_score_recalibration_method == "learnable_scaling":
-
+        elif self.relness_score_recalibration_method in ("learnable_scaling", "sigmoid_scaling", "polynomial_scaling"):
             each_img_relness = self.learnable_relness_score_gating_recalibration(
                 each_img_relness
             )

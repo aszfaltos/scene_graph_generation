@@ -6,3 +6,4 @@ build/
 *.so
 third_party
 **/output/
+*.pdf
