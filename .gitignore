@@ -1,2 +1,7 @@
 datasets/
 checkpoints/
+**/__pycache__/
+pysgg.egg-info/
+build/
+*.so
+third_party

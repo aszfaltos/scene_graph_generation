@@ -8,6 +8,7 @@ import gpustat
 import torch
 
 from pysgg.config import cfg
+from pysgg.utils.device import get_device, get_distributed_backend, is_cuda
 from pysgg.data import make_data_loader
 from pysgg.engine.inference import inference
 from pysgg.modeling.detector import build_detection_model
@@ -58,9 +59,10 @@ def main():
     distributed = num_gpus > 1
 
     if distributed:
-        torch.cuda.set_device(args.local_rank)
+        if is_cuda():
+            torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(
-            backend="nccl", init_method="env://"
+            backend=get_distributed_backend(), init_method="env://"
         )
         synchronize()
 

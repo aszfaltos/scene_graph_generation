@@ -9,6 +9,8 @@ import time
 import torch
 import torch.distributed as dist
 
+from pysgg.utils.device import get_device
+
 
 def get_world_size():
     if not dist.is_available():
@@ -53,8 +55,7 @@ def all_gather(data):
     Returns:
         list[data]: list of data gathered from each rank
     """
-    to_device = "cuda"
-    #to_device = torch.device("cpu")
+    to_device = get_device()
     
     world_size = get_world_size()
     if world_size == 1:

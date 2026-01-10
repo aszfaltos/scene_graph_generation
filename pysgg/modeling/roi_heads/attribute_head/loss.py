@@ -7,6 +7,7 @@ from pysgg.modeling.box_coder import BoxCoder
 from pysgg.modeling.matcher import Matcher
 from pysgg.structures.boxlist_ops import boxlist_iou
 from pysgg.modeling.utils import cat
+from pysgg.utils.device import get_device, to_device
 
 
 class AttributeHeadLossComputation(object):
@@ -88,7 +89,7 @@ class AttributeHeadLossComputation(object):
 
     def attribute_loss(self, logits, labels):
         if self.use_binary_loss:
-            all_loss = F.binary_cross_entropy_with_logits(logits, labels, pos_weight=torch.FloatTensor([self.pos_weight] * self.num_attri_cat).cuda())
+            all_loss = F.binary_cross_entropy_with_logits(logits, labels, pos_weight=to_device(torch.FloatTensor([self.pos_weight] * self.num_attri_cat)))
             return all_loss 
         else:
             # soft cross entropy

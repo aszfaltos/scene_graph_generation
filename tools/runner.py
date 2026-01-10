@@ -4,9 +4,15 @@ import os
 import random
 import time
 
-import gpustat
 import torch
 import numpy as np
+
+# This utility is CUDA-only (uses gpustat for NVIDIA GPU monitoring)
+if not torch.cuda.is_available():
+    print("runner.py: GPU placeholder utility requires CUDA. Skipping on non-CUDA device.")
+    exit(0)
+
+import gpustat
 
 
 def start():

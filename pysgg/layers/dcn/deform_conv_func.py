@@ -41,7 +41,12 @@ class DeformConvFunction(Function):
         ctx.bufs_ = [input.new_empty(0), input.new_empty(0)]  # columns, ones
 
         if not input.is_cuda:
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Deformable Convolution requires CUDA. "
+                "This operation is not supported on CPU or MPS devices. "
+                "Please use a CUDA-enabled GPU or disable deformable convolutions "
+                "by setting MODEL.RESNETS.STAGE_WITH_DCN to (False, False, False, False) in your config."
+            )
         else:
             cur_im2col_step = min(ctx.im2col_step, input.shape[0])
             assert (input.shape[0] %
@@ -75,7 +80,10 @@ class DeformConvFunction(Function):
         grad_input = grad_offset = grad_weight = None
 
         if not grad_output.is_cuda:
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Deformable Convolution requires CUDA. "
+                "This operation is not supported on CPU or MPS devices."
+            )
         else:
             cur_im2col_step = min(ctx.im2col_step, input.shape[0])
             assert (input.shape[0] %
@@ -172,7 +180,12 @@ class ModulatedDeformConvFunction(Function):
         if not ctx.with_bias:
             bias = input.new_empty(1)  # fake tensor
         if not input.is_cuda:
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Deformable Convolution requires CUDA. "
+                "This operation is not supported on CPU or MPS devices. "
+                "Please use a CUDA-enabled GPU or disable deformable convolutions "
+                "by setting MODEL.RESNETS.STAGE_WITH_DCN to (False, False, False, False) in your config."
+            )
         if weight.requires_grad or mask.requires_grad or offset.requires_grad \
                 or input.requires_grad:
             ctx.save_for_backward(input, offset, mask, weight, bias)
@@ -206,7 +219,10 @@ class ModulatedDeformConvFunction(Function):
     @once_differentiable
     def backward(ctx, grad_output):
         if not grad_output.is_cuda:
-            raise NotImplementedError
+            raise NotImplementedError(
+                "Deformable Convolution requires CUDA. "
+                "This operation is not supported on CPU or MPS devices."
+            )
         input, offset, mask, weight, bias = ctx.saved_tensors
         grad_input = torch.zeros_like(input)
         grad_offset = torch.zeros_like(offset)

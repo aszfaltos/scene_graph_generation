@@ -5,6 +5,7 @@ from torch import nn
 from torch.nn import functional as F, init
 
 from pysgg.config import cfg
+from pysgg.utils.device import get_device
 
 
 class WeightNormClassifier(nn.Module):
@@ -157,7 +158,7 @@ class CosineSimilarityClassifier(nn.Module):
         self.init_scale = scale
         self.scale = nn.Parameter(torch.ones(num_class) * self.init_scale)
         self.margin = margin
-        self.weight = nn.Parameter(torch.zeros((num_class, in_dims), device=torch.device('cuda')))
+        self.weight = nn.Parameter(torch.zeros((num_class, in_dims), device=get_device()))
         self.reset_parameters()
 
     def reset_parameters(self):

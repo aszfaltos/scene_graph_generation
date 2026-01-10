@@ -1,9 +1,11 @@
 # Well, this file contains modules of GGNN_obj and GGNN_rel
 import numpy as np
+import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
 from pysgg.config import cfg
+from pysgg.utils.device import get_device, to_device
 
 
 class GGNNObj(nn.Module):
@@ -126,7 +128,7 @@ class GGNNRel(nn.Module):
             for index, rel in enumerate(rel_inds):
                 batch_in_matrix_sub[index][0] = 1.0 / float(self.num_rel_cls)
                 batch_in_matrix_sub[index][1] = batch_in_matrix_sub[index][0]
-        batch_in_matrix_sub_gpu = Variable(torch.from_numpy(batch_in_matrix_sub), requires_grad=False).cuda()
+        batch_in_matrix_sub_gpu = to_device(Variable(torch.from_numpy(batch_in_matrix_sub), requires_grad=False))
         del batch_in_matrix_sub
 
         hidden = input_ggnn

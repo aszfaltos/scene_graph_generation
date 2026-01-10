@@ -19,6 +19,10 @@ import numpy as np
 import torch
 
 from pysgg.config import cfg
+from pysgg.utils.device import (
+    get_device, supports_amp, synchronize as device_sync,
+    max_memory_allocated, manual_seed, get_distributed_backend, is_cuda
+)
 from pysgg.data import make_data_loader
 from pysgg.engine.inference import inference
 from pysgg.engine.trainer import reduce_loss_dict
@@ -44,15 +48,16 @@ from pysgg.utils.global_buffer import save_buffer
 
 SEED = 666
 
-torch.cuda.manual_seed(SEED)  # 为当前GPU设置随机种子
-torch.cuda.manual_seed_all(SEED)  # 为所有GPU设置随机种子
-torch.manual_seed(SEED)
+# Device-agnostic seeding
+manual_seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
 
-torch.backends.cudnn.enabled = True  # 默认值
-torch.backends.cudnn.benchmark = True  # 默认为False
-torch.backends.cudnn.deterministic = True  # 默认为False;benchmark为True时,y要排除随机性必须为True
+# CUDA-specific settings (only applied if CUDA is available)
+if is_cuda():
+    torch.backends.cudnn.enabled = True
+    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.deterministic = True
 
 
 torch.autograd.set_detect_anomaly(True)
@@ -298,7 +303,9 @@ def train(
     # use_mixed_precision = cfg.DTYPE == "float16"
     # amp_opt_level = "O1" if use_mixed_precision else "O0"
     # model, optimizer = amp.initialize(model, optimizer, opt_level=amp_opt_level)
-    scaler = torch.cuda.amp.GradScaler()
+
+    # Only use GradScaler if AMP is supported (CUDA only)
+    scaler = torch.cuda.amp.GradScaler() if supports_amp() else None
 
     save_to_disk = get_rank() == 0
     checkpointer = DetectronCheckpointer(
@@ -379,12 +386,18 @@ def train(
 
         fix_eval_modules(eval_modules)
         optimizer.zero_grad()
-        with torch.cuda.amp.autocast():
+
+        # Use AMP only if supported (CUDA)
+        if supports_amp():
+            with torch.cuda.amp.autocast():
+                images = images.to(device)
+                targets = [target.to(device) for target in targets]
+                loss_dict = model(images, targets, logger=logger)
+                losses = sum(loss for loss in loss_dict.values())
+        else:
             images = images.to(device)
             targets = [target.to(device) for target in targets]
-
             loss_dict = model(images, targets, logger=logger)
-
             losses = sum(loss for loss in loss_dict.values())
 
         # reduce losses over all GPUs for logging purposes
@@ -398,7 +411,10 @@ def train(
         # try:
         # with amp.scale_loss(losses, optimizer) as scaled_losses:
         #     scaled_losses.backward()
-        scaler.scale(losses).backward()
+        if scaler is not None:
+            scaler.scale(losses).backward()
+        else:
+            losses.backward()
         # 
         # 
 
@@ -431,7 +447,11 @@ def train(
             clip=True,
         )
 
-        scaler.step(optimizer)
+        if scaler is not None:
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            optimizer.step()
 
         batch_time = time.time() - end
         end = time.time()
@@ -485,7 +505,7 @@ def train(
                     meters=str(meters),
                     lr=optimizer.param_groups[0]["lr"],
                     max_iter=max_iter,
-                    memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
+                    memory=max_memory_allocated() / 1024.0 / 1024.0,
                 )
             )
             if pre_clser_pretrain_on:
@@ -657,8 +677,9 @@ def main():
     args.distributed = num_gpus > 1
 
     if args.distributed:
-        torch.cuda.set_device(args.local_rank)
-        torch.distributed.init_process_group(backend="nccl", init_method="env://")
+        if is_cuda():
+            torch.cuda.set_device(args.local_rank)
+        torch.distributed.init_process_group(backend=get_distributed_backend(), init_method="env://")
         synchronize()
 
     cfg.merge_from_file(args.config_file)

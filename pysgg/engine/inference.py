@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from pysgg.config import cfg
 from pysgg.data.datasets.evaluation import evaluate
+from pysgg.utils.device import get_device, is_cuda, synchronize as device_synchronize
 from .bbox_aug import im_detect_bbox_aug
 from ..utils.comm import all_gather
 from ..utils.comm import is_main_process, get_world_size
@@ -40,7 +41,7 @@ def compute_on_dataset(model, data_loader, device, synchronize_gather=True, time
                 # relation detection needs the targets
                 output = model(images.to(device), targets, logger=logger)
             if timer:
-                if not cfg.MODEL.DEVICE == 'cpu':
+                if is_cuda():
                     torch.cuda.synchronize()
                 timer.toc()
             output = [o.to(cpu_device) for o in output]

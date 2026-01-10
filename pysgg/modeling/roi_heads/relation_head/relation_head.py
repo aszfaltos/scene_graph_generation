@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import torch
 
+from pysgg.utils.device import get_device, to_device
 from pysgg.modeling.roi_heads.relation_head.rel_proposal_network.models import (
     gt_rel_proposal_matching,
     RelationProposalModel,
@@ -170,7 +171,7 @@ class ROIRelationHead(torch.nn.Module):
                     self.cfg.MODEL.ROI_HEADS.FG_IOU_THRESHOLD,
                     self.cfg.TEST.RELATION.REQUIRE_OVERLAP,
                 )
-                gt_rel_binarys_matrix = [each.float().cuda() for each in gt_rel_binarys_matrix]
+                gt_rel_binarys_matrix = [to_device(each.float()) for each in gt_rel_binarys_matrix]
 
 
             if self.rel_prop_type == "rel_pn":

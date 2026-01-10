@@ -15,6 +15,10 @@ import gpustat
 import torch
 
 from pysgg.config import cfg
+from pysgg.utils.device import (
+    get_device, supports_amp, max_memory_allocated,
+    get_distributed_backend, is_cuda
+)
 from pysgg.data import make_data_loader
 from pysgg.engine.inference import inference
 from pysgg.engine.trainer import reduce_loss_dict
@@ -86,7 +90,7 @@ def train(cfg, local_rank, distributed, logger):
 
     logger.info("trainable models:")
     logger.info(show_params_status(model))
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.cuda.amp.GradScaler() if supports_amp() else None
 
     if distributed:
         model = torch.nn.parallel.DistributedDataParallel(
@@ -133,14 +137,20 @@ def train(cfg, local_rank, distributed, logger):
         iteration = iteration + 1
         arguments["iteration"] = iteration
 
-        
+
         optimizer.zero_grad()
-        with torch.cuda.amp.autocast():
+
+        # Use AMP only if supported (CUDA)
+        if supports_amp():
+            with torch.cuda.amp.autocast():
+                images = images.to(device)
+                targets = [target.to(device) for target in targets]
+                loss_dict = model(images, targets)
+                losses = sum(loss for loss in loss_dict.values())
+        else:
             images = images.to(device)
             targets = [target.to(device) for target in targets]
-
             loss_dict = model(images, targets)
-
             losses = sum(loss for loss in loss_dict.values())
 
         # reduce losses over all GPUs for logging purposes
@@ -152,8 +162,13 @@ def train(cfg, local_rank, distributed, logger):
         # Otherwise apply loss scaling for mixed-precision recipe
         # with amp.scale_loss(losses, optimizer) as scaled_losses:
         #     scaled_losses.backward()
-        scaler.scale(losses).backward()
-        scaler.step(optimizer)
+        if scaler is not None:
+            scaler.scale(losses).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            losses.backward()
+            optimizer.step()
         scheduler.step()
         batch_time = time.time() - end
         end = time.time()
@@ -184,7 +199,7 @@ def train(cfg, local_rank, distributed, logger):
                     meters=str(meters),
                     lr=optimizer.param_groups[0]["lr"],
                     max_iter=max_iter,
-                    memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
+                    memory=max_memory_allocated() / 1024.0 / 1024.0,
                 )
             )
 
@@ -330,9 +345,10 @@ def main():
     args.distributed = num_gpus > 1
 
     if args.distributed:
-        torch.cuda.set_device(args.local_rank)
+        if is_cuda():
+            torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(
-            backend="nccl", init_method="env://"
+            backend=get_distributed_backend(), init_method="env://"
         )
         synchronize()
 
