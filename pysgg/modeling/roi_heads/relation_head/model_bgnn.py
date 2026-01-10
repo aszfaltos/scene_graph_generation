@@ -243,7 +243,7 @@ class LearnableRelatednessGating(nn.Module):
         super(LearnableRelatednessGating, self).__init__()
         cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.BGNN_MODULE.LEARNABLE_SCALING_WEIGHT
         self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
-        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=False)
 
     def forward(self, relness):
         relness = torch.clamp(self.alpha * relness - self.alpha * self.beta, min=0, max=1.0)

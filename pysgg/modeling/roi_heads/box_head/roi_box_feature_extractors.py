@@ -187,6 +187,117 @@ class FPNXconv1fcFeatureExtractor(nn.Module):
         return x
 
 
+@registry.ROI_BOX_FEATURE_EXTRACTORS.register("MultiscaleROIFeatureExtractor")
+class MultiscaleROIFeatureExtractor(nn.Module):
+    """
+    Multiscale ROI Feature Extractor that wraps existing feature extractors
+    at multiple scales and combines their outputs.
+
+    This allows reusing any registered extractor (FPN2MLPFeatureExtractor,
+    FPNXconv1fcFeatureExtractor, etc.) at different scales.
+
+    Config options:
+        cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_POOLER_SCALES: list of scale tuples
+        cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_BASE_EXTRACTOR: base extractor name
+        cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_FUSION: fusion method
+    """
+
+    def __init__(self, cfg, in_channels, half_out=False, cat_all_levels=False, for_relation=False):
+        """
+        Args:
+            cfg: Config object (reads MULTISCALE_* options)
+            in_channels: Number of input channels
+            half_out: Whether to halve output dimension
+            cat_all_levels: Whether to concatenate all FPN levels
+            for_relation: Whether this is for relation head
+        """
+        super(MultiscaleROIFeatureExtractor, self).__init__()
+
+        # Read multiscale config
+        scales_list = cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_POOLER_SCALES
+        base_extractor = cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_BASE_EXTRACTOR
+        fusion = cfg.MODEL.ROI_BOX_HEAD.MULTISCALE_FUSION
+
+        self.fusion_method = fusion
+        self.num_scales = len(scales_list)
+
+        # Create an extractor for each scale by modifying the config
+        self.extractors = nn.ModuleList()
+        extractor_class = registry.ROI_BOX_FEATURE_EXTRACTORS[base_extractor]
+
+        for scales in scales_list:
+            # Clone and modify config for this scale
+            scale_cfg = cfg.clone()
+            scale_cfg.defrost()
+            scale_cfg.MODEL.ROI_BOX_HEAD.POOLER_SCALES = scales
+            scale_cfg.freeze()
+
+            extractor = extractor_class(
+                scale_cfg, in_channels, half_out=half_out,
+                cat_all_levels=cat_all_levels, for_relation=for_relation
+            )
+            self.extractors.append(extractor)
+
+        # Get output dimension from first extractor
+        single_out_channels: torch.Tensor = self.extractors[0].out_channels # type: ignore
+
+        # Attention-based fusion
+        if self.fusion_method == "attention":
+            self.scale_attention = nn.Sequential(
+                make_fc(single_out_channels, single_out_channels // 4),
+                nn.ReLU(inplace=True),
+                make_fc(single_out_channels // 4, 1),
+            )
+
+        # Set output channels based on fusion method
+        if self.fusion_method == "concat":
+            self.out_channels = single_out_channels * self.num_scales
+            # Projection to match expected output size
+            self.concat_proj = make_fc(self.out_channels, single_out_channels)
+            self.out_channels = single_out_channels
+        else:
+            self.out_channels = single_out_channels
+
+        # Copy resize_channels from base extractor
+        self.resize_channels = self.extractors[0].resize_channels
+
+    def forward(self, x, proposals):
+        # Extract features at each scale
+        scale_features = []
+        for extractor in self.extractors:
+            feat = extractor(x, proposals)
+            scale_features.append(feat)
+
+        # Fuse features from different scales
+        if self.fusion_method == "sum":
+            fused = torch.stack(scale_features, dim=0).sum(dim=0)
+        elif self.fusion_method == "mean":
+            fused = torch.stack(scale_features, dim=0).mean(dim=0)
+        elif self.fusion_method == "concat":
+            fused = torch.cat(scale_features, dim=-1)
+            fused = F.relu(self.concat_proj(fused))
+        elif self.fusion_method == "attention":
+            # Compute attention weights for each scale
+            attention_weights = []
+            for feat in scale_features:
+                weight = self.scale_attention(feat)
+                attention_weights.append(weight)
+            attention_weights = torch.softmax(torch.cat(attention_weights, dim=-1), dim=-1)
+
+            # Weighted sum
+            stacked = torch.stack(scale_features, dim=-1)  # (N, C, num_scales)
+            fused = (stacked * attention_weights.unsqueeze(1)).sum(dim=-1)
+        elif self.fusion_method == "max":
+            fused = torch.stack(scale_features, dim=0).max(dim=0)[0]
+        else:
+            raise ValueError(f"Unknown fusion method: {self.fusion_method}")
+
+        return fused
+
+    def forward_without_pool(self, x):
+        return self.extractors[0](x)
+
+
 def make_roi_box_feature_extractor(cfg, in_channels, half_out=False, cat_all_levels=False, for_relation=False):
     func = registry.ROI_BOX_FEATURE_EXTRACTORS[
         cfg.MODEL.ROI_BOX_HEAD.FEATURE_EXTRACTOR
