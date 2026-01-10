@@ -14,9 +14,12 @@ import time
 import threading
 import json
 
-import gpustat
 import numpy as np
 import torch
+
+# gpustat is CUDA-only
+if torch.cuda.is_available():
+    import gpustat
 
 from pysgg.config import cfg
 from pysgg.utils.device import (
@@ -282,7 +285,7 @@ def train(
         ] = "roi_heads.attribute.feature_extractor"
 
     print("load model to GPU")
-    device = torch.device(cfg.MODEL.DEVICE)
+    device = get_device(cfg.MODEL.DEVICE)
     model.to(device)
 
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1

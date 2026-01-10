@@ -105,7 +105,7 @@ def inference(
     load_prediction_from_cache = cfg.TEST.ALLOW_LOAD_FROM_CACHE and output_folder is not None and os.path.exists(
         os.path.join(output_folder, "eval_results.pytorch"))
     # convert to a torch.device for efficiency
-    device = torch.device(device)
+    device = get_device(device)
     num_devices = get_world_size()
     if logger is None:
         logger = logging.getLogger("pysgg.inference")

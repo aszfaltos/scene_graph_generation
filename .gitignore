@@ -5,3 +5,4 @@ pysgg.egg-info/
 build/
 *.so
 third_party
+**/output/
