@@ -211,6 +211,11 @@ class IMPPredictor(nn.Module):
 
         self.pooling_dim = config.MODEL.ROI_RELATION_HEAD.CONTEXT_POOLING_DIM
 
+        # PCE (Predicate Confidence Estimation) support
+        self.rel_aware_model_on = config.MODEL.ROI_RELATION_HEAD.IMP_MODULE.RELATION_CONFIDENCE_AWARE
+        if self.rel_aware_model_on:
+            self.rel_aware_loss_eval = RelAwareLoss(config)
+
         # freq
         if self.use_bias:
             statistics = get_dataset_statistics(config)
@@ -250,15 +255,20 @@ class IMPPredictor(nn.Module):
             union_features (Tensor): (batch_num_rel, context_pooling_dim): visual union feature of each pair
         """
 
-        # encode context infomation
-
-        obj_feats, rel_feats = self.context_layer(
-            roi_features, proposals, union_features, rel_pair_idxs, logger
+        # encode context information with optional PCE
+        obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+            roi_features, proposals, union_features, rel_pair_idxs,
+            rel_gt_binarys=rel_binarys, logger=logger
         )
+
+        # Store relatedness in proposals for visualization
+        if relatedness is not None:
+            for idx, prop in enumerate(proposals):
+                prop.add_field("relness_mat", relatedness[idx])
 
         if self.mode == "predcls":
             obj_labels = cat([proposal.get_field("labels") for proposal in proposals], dim=0)
-            obj_dists = to_onehot(obj_labels, self.num_obj)
+            obj_dists = to_onehot(obj_labels, self.num_obj_cls)
         else:
             obj_dists = self.obj_classifier(obj_feats)
 
@@ -283,9 +293,18 @@ class IMPPredictor(nn.Module):
         obj_dists = obj_dists.split(num_objs, dim=0)
         rel_dists = rel_dists.split(num_rels, dim=0)
 
-        # we use obj_preds instead of pred from obj_dists
-        # because in decoder_rnn, preds has been through a nms stage
+        # Compute auxiliary losses
         add_losses = {}
+
+        # PCE auxiliary loss
+        if pre_cls_logits is not None and self.training:
+            rel_labels_cat = cat(rel_labels, dim=0)
+            for iters, each_iter_logit in enumerate(pre_cls_logits):
+                if len(squeeze_tensor(torch.nonzero(rel_labels_cat != -1))) == 0:
+                    loss_rel_pre_cls = None
+                else:
+                    loss_rel_pre_cls = self.rel_aware_loss_eval(each_iter_logit, rel_labels_cat)
+                add_losses[f"pre_rel_classify_loss_iter-{iters}"] = loss_rel_pre_cls
 
         return obj_dists, rel_dists, add_losses
 

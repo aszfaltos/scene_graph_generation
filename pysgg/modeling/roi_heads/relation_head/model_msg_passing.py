@@ -1,14 +1,64 @@
 # modified from https://github.com/rowanz/neural-motifs
+import copy
+
 import torch
 from torch import nn
 from torch.nn import functional as F
 
+from pysgg.config import cfg
 from pysgg.data import get_dataset_statistics
 from pysgg.modeling.make_layers import make_fc
 from pysgg.modeling.roi_heads.relation_head.utils_relation import get_box_pair_info, get_box_info, \
     layer_init
 from pysgg.modeling.utils import cat
+from pysgg.structures.boxlist_ops import squeeze_tensor
 from .utils_motifs import obj_edge_vectors, encode_box_info
+
+# Import PCE infrastructure
+from pysgg.modeling.roi_heads.relation_head.rel_proposal_network.models import (
+    make_relation_confidence_aware_module,
+)
+
+
+class LearnableRelatednessGatingIMP(nn.Module):
+    """Learnable linear scaling for relatedness scores (IMP-specific)."""
+    def __init__(self):
+        super(LearnableRelatednessGatingIMP, self).__init__()
+        cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.LEARNABLE_SCALING_WEIGHT
+        self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=False)
+
+    def forward(self, relness):
+        relness = torch.clamp(self.alpha * relness - self.alpha * self.beta, min=0, max=1.0)
+        return relness
+
+
+class SigmoidLearnableRelatednessGatingIMP(nn.Module):
+    """Sigmoid-based learnable scaling for relatedness scores (IMP-specific)."""
+    def __init__(self):
+        super(SigmoidLearnableRelatednessGatingIMP, self).__init__()
+        cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.LEARNABLE_SCALING_WEIGHT
+        self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, relness):
+        relness = self.alpha * (relness - self.beta)
+        relness = self.sigmoid(relness)
+        return torch.clamp(relness, min=0, max=1.0)
+
+
+class PolinomialLearnableRelatednessGatingIMP(nn.Module):
+    """Polynomial (smoothstep) learnable scaling for relatedness scores (IMP-specific)."""
+    def __init__(self):
+        super(PolinomialLearnableRelatednessGatingIMP, self).__init__()
+        cfg_weight = cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.LEARNABLE_SCALING_WEIGHT
+        self.alpha = nn.Parameter(torch.Tensor([cfg_weight[0]]), requires_grad=True)
+        self.beta = nn.Parameter(torch.Tensor([cfg_weight[1]]), requires_grad=True)
+
+    def forward(self, relness):
+        t = torch.clamp(self.alpha * (relness - self.beta), 0, 1)
+        return t * t * (3 - 2 * t)
 
 
 class IMPContext(nn.Module):
@@ -43,68 +93,422 @@ class IMPContext(nn.Module):
         self.out_edge_w_fc = nn.Sequential(make_fc(hidden_dim * 2, 1), nn.Sigmoid())
         self.in_edge_w_fc = nn.Sequential(make_fc(hidden_dim * 2, 1), nn.Sigmoid())
 
-    def forward(self, inst_features, proposals, union_features, rel_pair_idxs, logger=None):
+        # ============ PCE (Predicate Confidence Estimation) Configuration ============
+        self.rel_aware_on = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.RELATION_CONFIDENCE_AWARE
+        self.apply_gt_for_rel_conf = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.APPLY_GT
+        self.filter_the_mp_instance = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.MP_ON_VALID_PAIRS
+        self.relness_weighting_mp = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.RELNESS_MP_WEIGHTING
+        self.vail_pair_num = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.MP_VALID_PAIRS_NUM
+
+        self.mp_pair_refine_iter = 1
+        self.relation_conf_aware_models = None
+        self.pretrain_pre_clser_mode = False
+
+        if self.rel_aware_on:
+            # Number of PCE refinement iterations
+            self.mp_pair_refine_iter = self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.ITERATE_MP_PAIR_REFINE
+            assert self.mp_pair_refine_iter > 0
+
+            self.shared_pre_rel_classifier = (
+                self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.SHARE_RELATED_MODEL_ACROSS_REFINE_ITER
+            )
+
+            if self.mp_pair_refine_iter <= 1:
+                self.shared_pre_rel_classifier = False
+
+            # Build relation confidence aware models
+            if not self.shared_pre_rel_classifier:
+                self.relation_conf_aware_models = nn.ModuleList()
+                for ii in range(self.mp_pair_refine_iter):
+                    if ii == 0:
+                        input_dim = self.pooling_dim
+                    else:
+                        input_dim = self.hidden_dim
+                    self.relation_conf_aware_models.append(
+                        make_relation_confidence_aware_module(input_dim)
+                    )
+            else:
+                input_dim = self.pooling_dim
+                self.relation_conf_aware_models = make_relation_confidence_aware_module(input_dim)
+
+            # Relatedness score recalibration
+            self.relness_score_recalibration_method = (
+                self.cfg.MODEL.ROI_RELATION_HEAD.IMP_MODULE.RELNESS_MP_WEIGHTING_SCORE_RECALIBRATION_METHOD
+            )
+
+            if self.relness_score_recalibration_method == "learnable_scaling":
+                self.learnable_relness_score_gating_recalibration = (
+                    LearnableRelatednessGatingIMP()
+                )
+            elif self.relness_score_recalibration_method == "sigmoid_scaling":
+                self.learnable_relness_score_gating_recalibration = (
+                    SigmoidLearnableRelatednessGatingIMP()
+                )
+            elif self.relness_score_recalibration_method == "polynomial_scaling":
+                self.learnable_relness_score_gating_recalibration = (
+                    PolinomialLearnableRelatednessGatingIMP()
+                )
+            elif self.relness_score_recalibration_method == "minmax":
+                self.min_relness = nn.Parameter(torch.Tensor([1e-5]), requires_grad=False)
+                self.max_relness = nn.Parameter(torch.Tensor([0.5]), requires_grad=False)
+            else:
+                raise ValueError(
+                    "Invalid relness_score_recalibration_method: "
+                    + self.relness_score_recalibration_method
+                )
+
+    def set_pretrain_pre_clser_mode(self, val=True):
+        """Enable/disable pre-classifier pretraining mode."""
+        self.pretrain_pre_clser_mode = val
+
+    def normalize(self, each_img_relness, selected_rel_prop_pairs_idx):
+        """MinMax normalization with moving average for relatedness scores."""
+        if len(squeeze_tensor(torch.nonzero(each_img_relness != 1.0))) > 10:
+            select_relness_for_minmax = each_img_relness[selected_rel_prop_pairs_idx]
+            curr_relness_max = select_relness_for_minmax.detach()[
+                int(len(select_relness_for_minmax) * 0.05):
+            ].max()
+            curr_relness_min = select_relness_for_minmax.detach().min()
+
+            min_val = self.min_relness.data * 0.7 + curr_relness_min * 0.3
+            max_val = self.max_relness.data * 0.7 + curr_relness_max * 0.3
+
+            if self.training:
+                # Moving average for relness scores normalization
+                self.min_relness.data = self.min_relness.data * 0.9 + curr_relness_min * 0.1
+                self.max_relness.data = self.max_relness.data * 0.9 + curr_relness_max * 0.1
+        else:
+            min_val = self.min_relness
+            max_val = self.max_relness
+
+        def minmax_norm(data, min_v, max_v):
+            return (data - min_v) / (max_v - min_v + 1e-5)
+
+        # Apply on all non 1.0 relness scores
+        each_img_relness[each_img_relness != 1.0] = torch.clamp(
+            minmax_norm(each_img_relness[each_img_relness != 1.0], min_val, max_val),
+            max=1.0,
+            min=0.0,
+        )
+        return each_img_relness
+
+    def ranking_minmax_recalibration(self, each_img_relness, selected_rel_prop_pairs_idx):
+        """Recalibrate relatedness scores using ranking-based minmax normalization."""
+        each_img_relness = self.normalize(each_img_relness, selected_rel_prop_pairs_idx)
+
+        # Set top 10% pairs to relness 1.0 (must-keep relationships)
+        total_rel_num = len(selected_rel_prop_pairs_idx)
+        each_img_relness[selected_rel_prop_pairs_idx[:int(total_rel_num * 0.1)]] += (
+            1.0 - each_img_relness[selected_rel_prop_pairs_idx[:int(total_rel_num * 0.1)]]
+        )
+        return each_img_relness
+
+    def relness_score_recalibration(self, each_img_relness, selected_rel_prop_pairs_idx):
+        """Apply the configured recalibration method to relatedness scores."""
+        if self.relness_score_recalibration_method == "minmax":
+            each_img_relness = self.ranking_minmax_recalibration(
+                each_img_relness, selected_rel_prop_pairs_idx
+            )
+        elif self.relness_score_recalibration_method in (
+            "learnable_scaling", "sigmoid_scaling", "polynomial_scaling"
+        ):
+            each_img_relness = self.learnable_relness_score_gating_recalibration(
+                each_img_relness
+            )
+        return each_img_relness
+
+    def _prepare_adjacency_matrix_with_pce(
+        self, num_objs, rel_pair_idxs, relatedness, device
+    ):
+        """
+        Prepare adjacency matrices with PCE-based filtering/weighting.
+
+        Returns:
+            sub2rel: subject-to-relation adjacency matrix (potentially weighted)
+            obj2rel: object-to-relation adjacency matrix (potentially weighted)
+            selected_relness: relatedness scores for selected pairs
+            selected_rel_prop_pairs_idx: indices of selected relationship pairs
+        """
+        obj_count = sum(num_objs)
+        rel_count = sum([len(pair_idx) for pair_idx in rel_pair_idxs])
+
+        # Build batch-wise concatenated rel_pair_idxs
+        rel_inds_batch_cat = []
+        offset = 0
+        for pair_idx, num_obj in zip(rel_pair_idxs, num_objs):
+            rel_ind_i = copy.deepcopy(pair_idx)
+            rel_ind_i += offset
+            offset += num_obj
+            rel_inds_batch_cat.append(rel_ind_i)
+        rel_inds_batch_cat = torch.cat(rel_inds_batch_cat, 0)
+
+        # Initialize adjacency matrices
+        sub2rel = torch.zeros(obj_count, rel_count, device=device).float()
+        obj2rel = torch.zeros(obj_count, rel_count, device=device).float()
+
+        if relatedness is None or not self.filter_the_mp_instance:
+            # No filtering: use all pairs
+            obj_offset = 0
+            rel_offset = 0
+            for pair_idx, num_obj in zip(rel_pair_idxs, num_objs):
+                num_rel = pair_idx.shape[0]
+                sub_idx = pair_idx[:, 0].contiguous().long().view(-1) + obj_offset
+                obj_idx = pair_idx[:, 1].contiguous().long().view(-1) + obj_offset
+                rel_idx = torch.arange(num_rel, device=device).long().view(-1) + rel_offset
+
+                sub2rel[sub_idx, rel_idx] = 1.0
+                obj2rel[obj_idx, rel_idx] = 1.0
+
+                obj_offset += num_obj
+                rel_offset += num_rel
+
+            selected_rel_prop_pairs_idx = torch.arange(rel_count, device=device)
+            selected_relness = None
+            return sub2rel, obj2rel, selected_relness, selected_rel_prop_pairs_idx
+
+        # With PCE filtering/weighting
+        rel_prop_pairs_relness_batch = []
+        for idx, (num_obj, rel_ind_i) in enumerate(zip(num_objs, rel_pair_idxs)):
+            related_matrix = relatedness[idx]
+            rel_prop_pairs_relness = related_matrix[rel_ind_i[:, 0], rel_ind_i[:, 1]]
+            rel_prop_pairs_relness_batch.append(rel_prop_pairs_relness)
+
+        # Process each image's relatedness scores
+        offset = 0
+        rel_prop_pairs_relness_sorted_idx = []
+        rel_prop_pairs_relness_batch_update = []
+
+        for idx, each_img_relness in enumerate(rel_prop_pairs_relness_batch):
+            selected_rel_prop_pairs_relness, selected_rel_prop_pairs_idx = torch.sort(
+                each_img_relness, descending=True
+            )
+
+            if self.apply_gt_for_rel_conf:
+                # Add non-GT rel pairs dynamically according to GT rel num
+                gt_rel_idx = squeeze_tensor(
+                    torch.nonzero(selected_rel_prop_pairs_relness == 1.0)
+                )
+                pred_rel_idx = squeeze_tensor(
+                    torch.nonzero(selected_rel_prop_pairs_relness < 1.0)
+                )
+                pred_rel_num = int(len(gt_rel_idx) * 0.2)
+                pred_rel_num = min(pred_rel_num, len(pred_rel_idx))
+                pred_rel_num = max(pred_rel_num, 5)
+                selected_rel_prop_pairs_idx = torch.cat((
+                    selected_rel_prop_pairs_idx[gt_rel_idx],
+                    selected_rel_prop_pairs_idx[pred_rel_idx[:pred_rel_num]],
+                ))
+            else:
+                # Select top-k pairs
+                selected_rel_prop_pairs_idx = selected_rel_prop_pairs_idx[:self.vail_pair_num]
+
+                if self.relness_weighting_mp and not self.pretrain_pre_clser_mode:
+                    each_img_relness = self.relness_score_recalibration(
+                        each_img_relness, selected_rel_prop_pairs_idx
+                    )
+                    selected_rel_prop_pairs_idx = squeeze_tensor(
+                        torch.nonzero(each_img_relness > 0.0001)
+                    )
+
+            rel_prop_pairs_relness_batch_update.append(each_img_relness)
+            rel_prop_pairs_relness_sorted_idx.append(selected_rel_prop_pairs_idx + offset)
+            offset += len(each_img_relness)
+
+        selected_rel_prop_pairs_idx = torch.cat(rel_prop_pairs_relness_sorted_idx, 0)
+        rel_prop_pairs_relness_batch_cat = torch.cat(rel_prop_pairs_relness_batch_update, 0)
+
+        # Build adjacency matrices with selected pairs
+        sub2rel[
+            rel_inds_batch_cat[selected_rel_prop_pairs_idx, 0],
+            selected_rel_prop_pairs_idx,
+        ] = 1
+        obj2rel[
+            rel_inds_batch_cat[selected_rel_prop_pairs_idx, 1],
+            selected_rel_prop_pairs_idx,
+        ] = 1
+
+        # Apply soft weighting if enabled
+        if self.relness_weighting_mp and not self.pretrain_pre_clser_mode:
+            weights = rel_prop_pairs_relness_batch_cat[selected_rel_prop_pairs_idx]
+            sub2rel[
+                rel_inds_batch_cat[selected_rel_prop_pairs_idx, 0],
+                selected_rel_prop_pairs_idx,
+            ] = weights
+            obj2rel[
+                rel_inds_batch_cat[selected_rel_prop_pairs_idx, 1],
+                selected_rel_prop_pairs_idx,
+            ] = weights
+
+        return sub2rel, obj2rel, rel_prop_pairs_relness_batch_cat, selected_rel_prop_pairs_idx
+
+    def forward(
+        self, inst_features, proposals, union_features, rel_pair_idxs,
+        rel_gt_binarys=None, logger=None
+    ):
+        """
+        Forward pass with optional PCE (Predicate Confidence Estimation).
+
+        Args:
+            inst_features: Instance ROI features
+            proposals: List of BoxList proposals
+            union_features: Union box features for relationships
+            rel_pair_idxs: List of relationship pair indices
+            rel_gt_binarys: Ground truth binary relationship matrices (optional)
+            logger: Logger for debugging (optional)
+
+        Returns:
+            obj_rep: Final object representations
+            rel_rep: Final relationship representations
+            pre_cls_logits_each_iter: Pre-classifier logits from each PCE iteration (or None)
+            relatedness_each_iters: Relatedness matrices from each iteration (or None)
+        """
         num_objs = [len(b) for b in proposals]
 
-        augment_obj_feat, rel_feats = self.pairwise_feature_extractor(inst_features, union_features,
-                                                                      proposals, rel_pair_idxs, )
+        augment_obj_feat, rel_feats = self.pairwise_feature_extractor(
+            inst_features, union_features, proposals, rel_pair_idxs
+        )
 
+        # Initialize representations
         obj_rep = self.obj_unary(augment_obj_feat)
         rel_rep = F.relu(self.edge_unary(rel_feats))
 
         obj_count = obj_rep.shape[0]
         rel_count = rel_rep.shape[0]
+        device = obj_rep.device
 
-        # generate sub-rel-obj mapping
-        sub2rel = torch.zeros(obj_count, rel_count).to(obj_rep.device).float()
-        obj2rel = torch.zeros(obj_count, rel_count).to(obj_rep.device).float()
-        obj_offset = 0
-        rel_offset = 0
+        # Build global index mappings (needed for message passing)
         sub_global_inds = []
         obj_global_inds = []
+        obj_offset = 0
         for pair_idx, num_obj in zip(rel_pair_idxs, num_objs):
-            num_rel = pair_idx.shape[0]
             sub_idx = pair_idx[:, 0].contiguous().long().view(-1) + obj_offset
             obj_idx = pair_idx[:, 1].contiguous().long().view(-1) + obj_offset
-            rel_idx = torch.arange(num_rel).to(obj_rep.device).long().view(-1) + rel_offset
-
             sub_global_inds.append(sub_idx)
             obj_global_inds.append(obj_idx)
-
-            sub2rel[sub_idx, rel_idx] = 1.0
-            obj2rel[obj_idx, rel_idx] = 1.0
-
             obj_offset += num_obj
-            rel_offset += num_rel
-
         sub_global_inds = torch.cat(sub_global_inds, dim=0)
         obj_global_inds = torch.cat(obj_global_inds, dim=0)
 
-        # iterative message passing
-        hx_obj = torch.zeros(obj_count, self.hidden_dim, requires_grad=False).to(obj_rep.device).float()
-        hx_rel = torch.zeros(rel_count, self.hidden_dim, requires_grad=False).to(obj_rep.device).float()
+        # Track outputs for each refinement iteration
+        relatedness_each_iters = []
+        pre_cls_logits_each_iter = []
+        refine_obj_feats = [obj_rep]
+        refine_rel_feats = [rel_feats]  # Store original pooling_dim features for PCE
 
-        vert_factor = [self.node_gru(obj_rep, hx_obj)]
-        edge_factor = [self.edge_gru(rel_rep, hx_rel)]
+        # ============ Main PCE + Message Passing Loop ============
+        for refine_iter in range(self.mp_pair_refine_iter):
 
-        for i in range(self.num_iter):
-            # compute edge context
-            sub_vert = vert_factor[i][sub_global_inds]
-            obj_vert = vert_factor[i][obj_global_inds]
-            weighted_sub = self.sub_vert_w_fc(
-                torch.cat((sub_vert, edge_factor[i]), 1)) * sub_vert
-            weighted_obj = self.obj_vert_w_fc(
-                torch.cat((obj_vert, edge_factor[i]), 1)) * obj_vert
+            # --- Step 1: Compute PCE (if enabled) ---
+            pre_cls_logits = None
+            pred_relatedness_scores = None
 
-            edge_factor.append(self.edge_gru(weighted_sub + weighted_obj, edge_factor[i]))
+            if self.rel_aware_on:
+                input_features = refine_rel_feats[-1]
 
-            # Compute vertex context
-            pre_out = self.out_edge_w_fc(torch.cat((sub_vert, edge_factor[i]), 1)) * edge_factor[i]
-            pre_in = self.in_edge_w_fc(torch.cat((obj_vert, edge_factor[i]), 1)) * edge_factor[i]
-            vert_ctx = sub2rel @ pre_out + obj2rel @ pre_in
-            vert_factor.append(self.node_gru(vert_ctx, vert_factor[i]))
+                if not self.shared_pre_rel_classifier:
+                    pre_cls_logits, pred_relatedness_scores = self.relation_conf_aware_models[
+                        refine_iter
+                    ](input_features, proposals, rel_pair_idxs)
+                else:
+                    pre_cls_logits, pred_relatedness_scores = self.relation_conf_aware_models(
+                        input_features, proposals, rel_pair_idxs
+                    )
+                pre_cls_logits_each_iter.append(pre_cls_logits)
 
-        return vert_factor[-1], edge_factor[-1]
+            relatedness_scores = pred_relatedness_scores
+
+            # Apply GT relatedness if configured
+            if self.apply_gt_for_rel_conf and rel_gt_binarys is not None:
+                ref_relatedness = [r.clone() for r in rel_gt_binarys]
+                if pred_relatedness_scores is None:
+                    relatedness_scores = ref_relatedness
+                else:
+                    relatedness_scores = pred_relatedness_scores
+                    for idx, ref_rel in enumerate(ref_relatedness):
+                        gt_rel_idx = ref_rel.nonzero()
+                        if len(gt_rel_idx) > 0:
+                            relatedness_scores[idx][gt_rel_idx[:, 0], gt_rel_idx[:, 1]] = 1.0
+
+            relatedness_each_iters.append(relatedness_scores)
+
+            # --- Step 2: Prepare adjacency matrices ---
+            if self.rel_aware_on and self.filter_the_mp_instance and not self.pretrain_pre_clser_mode:
+                # Use PCE-filtered adjacency matrices
+                sub2rel, obj2rel, selected_relness, selected_pairs_idx = \
+                    self._prepare_adjacency_matrix_with_pce(
+                        num_objs, rel_pair_idxs, relatedness_scores, device
+                    )
+            else:
+                # Standard adjacency matrices (no filtering)
+                sub2rel = torch.zeros(obj_count, rel_count).to(device).float()
+                obj2rel = torch.zeros(obj_count, rel_count).to(device).float()
+                obj_offset = 0
+                rel_offset = 0
+
+                for pair_idx, num_obj in zip(rel_pair_idxs, num_objs):
+                    num_rel = pair_idx.shape[0]
+                    sub_idx = pair_idx[:, 0].contiguous().long().view(-1) + obj_offset
+                    obj_idx = pair_idx[:, 1].contiguous().long().view(-1) + obj_offset
+                    rel_idx = torch.arange(num_rel).to(device).long().view(-1) + rel_offset
+
+                    sub2rel[sub_idx, rel_idx] = 1.0
+                    obj2rel[obj_idx, rel_idx] = 1.0
+
+                    obj_offset += num_obj
+                    rel_offset += num_rel
+
+            # --- Step 3: Iterative message passing ---
+            current_obj_rep = refine_obj_feats[-1]
+            current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+
+            hx_obj = torch.zeros(obj_count, self.hidden_dim, requires_grad=False).to(device).float()
+            hx_rel = torch.zeros(rel_count, self.hidden_dim, requires_grad=False).to(device).float()
+
+            vert_factor = [self.node_gru(current_obj_rep, hx_obj)]
+            edge_factor = [self.edge_gru(current_rel_rep, hx_rel)]
+
+            for i in range(self.num_iter):
+                # Compute edge context
+                sub_vert = vert_factor[i][sub_global_inds]
+                obj_vert = vert_factor[i][obj_global_inds]
+                weighted_sub = self.sub_vert_w_fc(
+                    torch.cat((sub_vert, edge_factor[i]), 1)) * sub_vert
+                weighted_obj = self.obj_vert_w_fc(
+                    torch.cat((obj_vert, edge_factor[i]), 1)) * obj_vert
+
+                edge_factor.append(self.edge_gru(weighted_sub + weighted_obj, edge_factor[i]))
+
+                # Compute vertex context
+                pre_out = self.out_edge_w_fc(torch.cat((sub_vert, edge_factor[i]), 1)) * edge_factor[i]
+                pre_in = self.in_edge_w_fc(torch.cat((obj_vert, edge_factor[i]), 1)) * edge_factor[i]
+                vert_ctx = sub2rel @ pre_out + obj2rel @ pre_in
+                vert_factor.append(self.node_gru(vert_ctx, vert_factor[i]))
+
+            # Store refined features for next PCE iteration
+            refine_obj_feats.append(vert_factor[-1])
+            refine_rel_feats.append(edge_factor[-1])
+
+        # --- Prepare outputs ---
+        final_obj_rep = refine_obj_feats[-1]
+        final_rel_rep = refine_rel_feats[-1]
+
+        # Stack relatedness matrices for output (for visualization)
+        if len(relatedness_each_iters) > 0 and relatedness_each_iters[0] is not None and not self.training:
+            try:
+                relatedness_each_iters = torch.stack(
+                    [torch.stack(each) for each in relatedness_each_iters]
+                )
+                relatedness_each_iters = relatedness_each_iters.permute(1, 2, 3, 0)
+            except (RuntimeError, TypeError, ValueError):
+                # Stacking may fail if relatedness tensors have inconsistent shapes
+                relatedness_each_iters = None
+        else:
+            relatedness_each_iters = None
+
+        if len(pre_cls_logits_each_iter) == 0:
+            pre_cls_logits_each_iter = None
+
+        return final_obj_rep, final_rel_rep, pre_cls_logits_each_iter, relatedness_each_iters
 
 
 class PairwiseFeatureExtractor(nn.Module):
