@@ -397,9 +397,13 @@ def main():
     parser.add_argument('--dataset_name_test',type=str,default='VG_stanford_test')
     parser.add_argument('--dataset_name_val',type=str,default='VG_stanford_val')
     parser.add_argument('--img_dir',type=str,default='datasets/vg/stanford_spilt/VG_100k_images')
-    #parser.add_argument('--glove_dir',type=str,default='datasets/vg/stanford_spilt/glove') 
-    #parser.add_argument('--word2vec_dir', type=str, default='datasets/vg/stanford_spilt/word2vec')
-    parser.add_argument('--bert_dir', type=str, default='datasets/vg/stanford_spilt/bert')  
+    parser.add_argument('--embedding_type', type=str, default='bert',
+                        choices=['word2vec', 'bert', 'minilm', 'glove'],
+                        help='Type of word embeddings to use')
+    parser.add_argument('--glove_dir', type=str, default='models/glove')
+    parser.add_argument('--word2vec_dir', type=str, default='models/word2vec')
+    parser.add_argument('--bert_dir', type=str, default='models/bert')
+    parser.add_argument('--minilm_dir', type=str, default='models/minilm')  
     parser.add_argument('--roidb_file',type=str,default='datasets/vg/VG-SGG-with-attri.h5')
     parser.add_argument('--dict_file',type=str,default='datasets/vg/VG-SGG-dicts-with-attri.json')
     parser.add_argument('--image_file',type=str,default='datasets/vg/image_data.json')

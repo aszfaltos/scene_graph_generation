@@ -1,5 +1,6 @@
 datasets/
 checkpoints/
+models/
 **/__pycache__/
 pysgg.egg-info/
 build/

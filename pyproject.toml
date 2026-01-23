@@ -26,6 +26,10 @@ dependencies = [
     "termcolor>=2.5.0",
     "graphviz>=0.20.0",
     "pycocotools>=2.0.8",
+    "gensim>=4.4.0",
+    "transformers>=4.40.0",
+    "requests>=2.31.0",
+    "sentence-transformers>=2.7.0",
 ]
 
 [project.optional-dependencies]
@@ -35,13 +39,6 @@ dev = [
     "pytest>=8.3.0",
     "gpustat>=1.1.0",
     "gitpython>=3.1.0",
-]
-
-[tool.uv]
-dev-dependencies = [
-    "ipython>=8.29.0",
-    "ipdb>=0.13.0",
-    "pytest>=8.3.0",
 ]
 
 [tool.uv.sources]

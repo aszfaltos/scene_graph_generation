@@ -2,7 +2,7 @@
 # import os
 
 # # 指定本地保存路径，例如 VSCode 项目文件夹
-# save_directory = "/home/p_zhuzy/p_zhu/PySGG-main/datasets/vg/stanford_spilt/bert"  # 你可以更改这个路径
+# save_directory = "models/bert"
 
 # # 下载并保存模型
 # tokenizer = AutoTokenizer.from_pretrained("google-bert/bert-base-uncased")

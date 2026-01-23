@@ -1,5 +1,95 @@
 # DATASET
 
+## Pretrained Language Models
+
+The semantic encoders require pretrained word embedding models. These should be placed in the `models/` directory. Select the embedding type using the `--embedding_type` argument:
+
+```bash
+# Training with different embedding types
+uv run python train.py --embedding_type bert    # BERT (768-dim, default)
+uv run python train.py --embedding_type minilm  # MiniLM (384-dim)
+uv run python train.py --embedding_type word2vec  # Word2Vec (300-dim)
+uv run python train.py --embedding_type glove   # GloVe (300-dim, for baselines)
+```
+
+### Word2Vec (Google News)
+
+Download the Google News Word2Vec model (300-dimensional, ~1.5GB compressed):
+
+```bash
+mkdir -p models/word2vec
+
+# Option 1: Using gensim downloader (recommended, ~1.7GB download)
+uv run python -c "
+import gensim.downloader as api
+model = api.load('word2vec-google-news-300')
+model.save_word2vec_format('models/word2vec/GoogleNews-vectors-negative300.bin', binary=True)
+print('Word2Vec model saved')
+"
+
+# Option 2: Download original from Google Drive using gdown
+uv pip install gdown
+uv run python -m gdown 0B7XkCwpI5KDYNlNUTTlSS21pQmM -O models/word2vec/GoogleNews-vectors-negative300.bin.gz
+gunzip models/word2vec/GoogleNews-vectors-negative300.bin.gz
+```
+
+### BERT (bert-base-uncased)
+
+Download the BERT model from Hugging Face (~440MB):
+
+```bash
+mkdir -p models/bert
+
+# Option 1: Using uvx hf (recommended)
+uvx hf download google-bert/bert-base-uncased --local-dir models/bert
+
+# Option 2: Using Python
+uv run python -c "
+from transformers import AutoTokenizer, AutoModel
+tokenizer = AutoTokenizer.from_pretrained('google-bert/bert-base-uncased')
+model = AutoModel.from_pretrained('google-bert/bert-base-uncased')
+tokenizer.save_pretrained('models/bert')
+model.save_pretrained('models/bert')
+print('BERT model saved to models/bert')
+"
+```
+
+### MiniLM (all-MiniLM-L6-v2)
+
+Download the MiniLM sentence transformer model (~90MB):
+
+```bash
+mkdir -p models/minilm
+
+# Option 1: Using uvx hf (recommended)
+uvx hf download sentence-transformers/all-MiniLM-L6-v2 --local-dir models/minilm
+
+# Option 2: Using Python (auto-downloads on first use)
+uv run python -c "
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+model.save('models/minilm')
+print('MiniLM model saved to models/minilm')
+"
+```
+
+### GloVe (for baselines)
+
+Download GloVe embeddings (~862MB). Required for baseline models (MotifNet, VCTree, etc.):
+
+```bash
+mkdir -p models/glove
+
+# Download and extract GloVe 6B embeddings
+curl -L https://nlp.stanford.edu/data/glove.6B.zip -o models/glove/glove.6B.zip
+unzip models/glove/glove.6B.zip -d models/glove/
+rm models/glove/glove.6B.zip  # Optional: remove zip after extraction
+```
+
+This creates `models/glove/glove.6B.{50,100,200,300}d.txt`. The code uses `glove.6B.300d.txt` by default.
+
+---
+
 ## Visual Genome
 The following is adapted from [Danfei Xu](https://github.com/danfeiX/scene-graph-TF-release/blob/master/data_tools/README.md) and [neural-motifs](https://github.com/rowanz/neural-motifs).
 
