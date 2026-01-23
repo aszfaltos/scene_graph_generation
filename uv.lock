@@ -1147,6 +1147,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "cython" },
+    { name = "gensim" },
     { name = "graphviz" },
     { name = "h5py" },
     { name = "matplotlib" },
@@ -1155,8 +1156,10 @@ dependencies = [
     { name = "opencv-python" },
     { name = "overrides" },
     { name = "pycocotools" },
+    { name = "requests" },
     { name = "scikit-learn" },
     { name = "scipy" },
+    { name = "sentence-transformers" },
     { name = "tensorboardx" },
     { name = "termcolor" },
     { name = "torch", version = "2.6.0+cu124", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
@@ -1164,25 +1167,23 @@ dependencies = [
     { name = "torchvision", version = "0.21.0+cu124", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "torchvision", version = "0.25.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "tqdm" },
+    { name = "transformers" },
     { name = "yacs" },
 ]
 
 [package.optional-dependencies]
 dev = [
-    { name = "gensim" },
     { name = "gitpython" },
     { name = "gpustat" },
     { name = "ipdb" },
     { name = "ipython" },
     { name = "pytest" },
-    { name = "requests" },
-    { name = "transformers" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "cython", specifier = ">=3.0.0" },
-    { name = "gensim", marker = "extra == 'dev'", specifier = ">=4.4.0" },
+    { name = "gensim", specifier = ">=4.4.0" },
     { name = "gitpython", marker = "extra == 'dev'", specifier = ">=3.1.0" },
     { name = "gpustat", marker = "extra == 'dev'", specifier = ">=1.1.0" },
     { name = "graphviz", specifier = ">=0.20.0" },
@@ -1196,9 +1197,10 @@ requires-dist = [
     { name = "overrides", specifier = ">=7.7.0" },
     { name = "pycocotools", specifier = ">=2.0.8" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.0" },
-    { name = "requests", marker = "extra == 'dev'", specifier = ">=2.31.0" },
+    { name = "requests", specifier = ">=2.31.0" },
     { name = "scikit-learn", specifier = ">=1.5.0" },
     { name = "scipy", specifier = ">=1.14.0" },
+    { name = "sentence-transformers", specifier = ">=2.7.0" },
     { name = "tensorboardx", specifier = ">=2.6.0" },
     { name = "termcolor", specifier = ">=2.5.0" },
     { name = "torch", marker = "sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'", specifier = ">=2.5.0" },
@@ -1210,7 +1212,7 @@ requires-dist = [
     { name = "torchvision", marker = "sys_platform == 'linux'", specifier = ">=0.20.0", index = "https://download.pytorch.org/whl/cu124" },
     { name = "torchvision", marker = "sys_platform == 'win32'", specifier = ">=0.20.0", index = "https://download.pytorch.org/whl/cu124" },
     { name = "tqdm", specifier = ">=4.67.0" },
-    { name = "transformers", marker = "extra == 'dev'", specifier = ">=4.40.0" },
+    { name = "transformers", specifier = ">=4.40.0" },
     { name = "yacs", specifier = ">=0.1.8" },
 ]
 provides-extras = ["dev"]
@@ -1475,6 +1477,25 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ef/5e/e565bd73991d42023eb82bb99e51c5b3d9e2c588ca9d4b3e2cc1d3ca62a6/scipy-1.17.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:f9eb55bb97d00f8b7ab95cb64f873eb0bf54d9446264d9f3609130381233483f", size = 37457743 },
     { url = "https://files.pythonhosted.org/packages/58/a8/a66a75c3d8f1fb2b83f66007d6455a06a6f6cf5618c3dc35bc9b69dd096e/scipy-1.17.0-cp314-cp314t-win_amd64.whl", hash = "sha256:1ff269abf702f6c7e67a4b7aad981d42871a11b9dd83c58d2d2ea624efbd1088", size = 37098574 },
     { url = "https://files.pythonhosted.org/packages/56/a5/df8f46ef7da168f1bc52cd86e09a9de5c6f19cc1da04454d51b7d4f43408/scipy-1.17.0-cp314-cp314t-win_arm64.whl", hash = "sha256:031121914e295d9791319a1875444d55079885bbae5bdc9c5e0f2ee5f09d34ff", size = 25246266 },
+]
+
+[[package]]
+name = "sentence-transformers"
+version = "5.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+    { name = "torch", version = "2.6.0+cu124", source = { registry = "https://download.pytorch.org/whl/cu124" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "torch", version = "2.10.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "tqdm" },
+    { name = "transformers" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a2/a1/64e7b111e753307ffb7c5b6d039c52d4a91a47fa32a7f5bc377a49b22402/sentence_transformers-5.2.0.tar.gz", hash = "sha256:acaeb38717de689f3dab45d5e5a02ebe2f75960a4764ea35fea65f58a4d3019f", size = 381004 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/d0/3b2897ef6a0c0c801e9fecca26bcc77081648e38e8c772885ebdd8d7d252/sentence_transformers-5.2.0-py3-none-any.whl", hash = "sha256:aa57180f053687d29b08206766ae7db549be5074f61849def7b17bf0b8025ca2", size = 493748 },
 ]
 
 [[package]]

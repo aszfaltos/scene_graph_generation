@@ -151,7 +151,80 @@ cp /path-to-vg/zeroshot_triplet.pytorch pysgg/data/datasets/evaluation/vg/
 
 **Note:** If you want to use different directories, edit the paths in `DATASETS['VG_stanford_filtered_with_attribute']` in `pysgg/config/paths_catalog.py`.
 
-## Openimage V4/V6 
+## VRD (Visual Relationship Detection)
+
+The Stanford VRD dataset by Lu et al. (ECCV 2016) - "Visual Relationship Detection with Language Priors".
+
+### Dataset Statistics
+- **Images**: 5,000 (4,000 train / 1,000 test)
+- **Object categories**: 100
+- **Predicate categories**: 70
+- **Relationships**: 37,993
+
+### Download
+
+The original Stanford image server is no longer available. Use Kaggle for images and Stanford for annotations:
+
+```bash
+mkdir -p datasets/vrd
+cd datasets/vrd
+
+# Step 1: Download images from Kaggle (~1.5GB)
+# Go to: https://www.kaggle.com/datasets/apoorvshekher/visual-relationship-detection-vrd-dataset
+# Download and extract sg_train_images/ and sg_test_images/ to datasets/vrd/
+# You can delete the Kaggle annotation files (sg_*_annotations.json) - we don't use them
+
+# Step 2: Download original annotations from Stanford
+curl -L https://cs.stanford.edu/people/ranjaykrishna/vrd/json_dataset.zip -o json_dataset.zip
+unzip -j json_dataset.zip -d . && rm json_dataset.zip
+
+cd ../..
+```
+
+**Why both sources?** The Kaggle dataset contains the images but uses a different annotation format (text-based with ~1000 predicates). The original Stanford annotations use integer indices with the canonical 70 predicates and 100 objects required for the VRD benchmark.
+
+### Expected Directory Structure
+
+```
+datasets/vrd/
+├── sg_train_images/          # 4,000 training images
+│   └── *.jpg
+├── sg_test_images/           # 1,000 test images
+│   └── *.jpg
+├── annotations_train.json    # Training annotations
+├── annotations_test.json     # Test annotations
+├── objects.json              # 100 object categories
+└── predicates.json           # 70 predicate categories
+```
+
+### Usage
+
+```bash
+# Training on VRD with BGNN model
+uv run python train.py --config-file configs/e2e_relBGNN_vrd.yaml
+
+# Or specify datasets directly
+uv run python train.py --dataset vrd_train --test_dataset vrd_test
+
+# The dataset identifiers are:
+# - vrd_train: Training split (4,000 images)
+# - vrd_test: Test split (1,000 images)
+```
+
+### Citation
+
+```bibtex
+@inproceedings{lu2016visual,
+  title={Visual Relationship Detection with Language Priors},
+  author={Lu, Cewu and Krishna, Ranjay and Bernstein, Michael and Fei-Fei, Li},
+  booktitle={European Conference on Computer Vision (ECCV)},
+  year={2016}
+}
+```
+
+---
+
+## Openimage V4/V6
 
 ### Download
 The initial dataset(oidv6/v4-train/test/validation-annotations-vrd.csv) can be downloaded from [offical website]( https://storage.googleapis.com/openimages/web/download.html).

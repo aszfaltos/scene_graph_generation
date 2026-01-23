@@ -128,6 +128,12 @@ class DatasetCatalog(object):
             "ann_file": "openimages/open_image_v6/annotations/vrd-%s-anno.json",
             "cate_info_file": "openimages/open_image_v6/annotations/categories_dict.json",
         },
+        "vrd": {
+            "img_dir": "vrd/sg_%s_images",
+            "ann_file": "vrd/annotations_%s.json",
+            "objects_file": "vrd/objects.json",
+            "predicates_file": "vrd/predicates.json",
+        },
     }
 
     @staticmethod
@@ -191,6 +197,28 @@ class DatasetCatalog(object):
             args['flip_aug'] = cfg.MODEL.FLIP_AUG
             return dict(
                 factory="OIDataset",
+                args=args,
+            )
+        elif name.startswith("vrd"):
+            # name should be vrd_train or vrd_test
+            p = name.rfind("_")
+            name, split = name[:p], name[p + 1:]
+
+            assert name in DatasetCatalog.DATASETS and split in {'train', 'test'}
+            data_dir = DatasetCatalog.DATA_DIR
+            args = copy.deepcopy(DatasetCatalog.DATASETS[name])
+
+            for k, v in args.items():
+                args[k] = os.path.join(data_dir, v)
+
+            # Format paths with split
+            args['img_dir'] = args['img_dir'] % split
+            args['ann_file'] = args['ann_file'] % split
+
+            args['split'] = split
+            args['flip_aug'] = cfg.MODEL.FLIP_AUG
+            return dict(
+                factory="VRDDataset",
                 args=args,
             )
 
