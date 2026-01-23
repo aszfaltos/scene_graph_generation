@@ -1,15 +1,21 @@
 #!/bin/bash
-#SBATCH -A p_zhu                 # 指定项目名称
-#SBATCH --partition=gpu              # 选择有效的分区
-#SBATCH --gres=gpu:1               # 请求 1 个 GPU
-#SBATCH --job-name=test_pysgg  # 作业名称
-#SBATCH --time=03:00:00              # 设置运行时间
-#SBATCH --mail-type=ALL              # 邮件通知类型
-#SBATCH --mail-user=drgck8@inf.elte.hu  # 邮件地址
+#SBATCH -A p_zhu                     # Project name
+#SBATCH --partition=gpu              # GPU partition
+#SBATCH --gres=gpu:1                 # Request 1 GPU
+#SBATCH --job-name=pysgg_train       # Job name
+#SBATCH --time=03:00:00              # Time limit
+#SBATCH --mail-type=ALL              # Email notifications
+#SBATCH --mail-user=drgck8@inf.elte.hu
 #SBATCH --mem-per-gpu=50000
 #SBATCH --nodes=1
- 
 
- 
-# 执行训练脚本
-/home/p_zhuzy/miniconda3/envs/pysgg/bin/python -u /home/p_zhuzy/p_zhu/PySGG-main/train.py
+# Set project directory
+PROJECT_DIR=/home/p_zhuzy/p_zhu/PySGG-main
+
+# Option 1: Using uv (recommended)
+cd $PROJECT_DIR
+uv run python -u train.py
+
+# Option 2: Using venv directly (alternative)
+# source $PROJECT_DIR/.venv/bin/activate
+# python -u train.py

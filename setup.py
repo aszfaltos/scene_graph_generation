@@ -15,6 +15,7 @@ requirements = ["torch", "torchvision"]
 
 
 def get_extensions():
+    import sys
     this_dir = os.path.dirname(os.path.abspath(__file__))
     extensions_dir = os.path.join(this_dir, "pysgg", "csrc")
 
@@ -22,15 +23,25 @@ def get_extensions():
     source_cpu = glob.glob(os.path.join(extensions_dir, "cpu", "*.cpp"))
     source_cuda = glob.glob(os.path.join(extensions_dir, "cuda", "*.cu"))
 
-    sources = main_file + source_cpu
+    # Convert absolute paths to relative paths for setuptools compatibility
+    sources = [os.path.relpath(f, this_dir) for f in main_file + source_cpu]
     extension = CppExtension
 
     extra_compile_args = {"cxx": []}
     define_macros = []
+    extra_link_args = []
+
+    # Add rpath for torch libraries on macOS
+    if sys.platform == "darwin":
+        torch_lib_path = os.path.join(os.path.dirname(torch.__file__), "lib")
+        extra_link_args = [
+            f"-Wl,-rpath,{torch_lib_path}",
+            "-headerpad_max_install_names",
+        ]
 
     if (torch.cuda.is_available() and CUDA_HOME is not None) or os.getenv("FORCE_CUDA", "0") == "1":
         extension = CUDAExtension
-        sources += source_cuda
+        sources += [os.path.relpath(f, this_dir) for f in source_cuda]
         define_macros += [("WITH_CUDA", None)]
         extra_compile_args["nvcc"] = [
             "-DCUDA_HAS_FP16=1",
@@ -39,8 +50,7 @@ def get_extensions():
             "-D__CUDA_NO_HALF2_OPERATORS__",
         ]
 
-    sources = [os.path.join(extensions_dir, s) for s in sources]
-
+    # Include dirs must be absolute for compiler to find headers
     include_dirs = [extensions_dir]
 
     ext_modules = [
@@ -50,6 +60,7 @@ def get_extensions():
             include_dirs=include_dirs,
             define_macros=define_macros,
             extra_compile_args=extra_compile_args,
+            extra_link_args=extra_link_args,
         )
     ]
 
@@ -62,6 +73,7 @@ setup(
     author="Rongjie Li, Songyang Zhang",
     url="",
     description="A Toolkit for Scene Graph Generation",
+    python_requires=">=3.13",
     packages=find_packages(exclude=("configs", "tests",)),
     # install_requires=requirements,
     ext_modules=get_extensions(),

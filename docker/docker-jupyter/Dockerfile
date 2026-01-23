@@ -1,67 +1,53 @@
-ARG CUDA="9.0"
-ARG CUDNN="7"
+# Scene Graph Generation Jupyter Docker Image with uv
+# CUDA 12.4 + Python 3.13 + PyTorch 2.x + Jupyter
 
-FROM nvidia/cuda:${CUDA}-cudnn${CUDNN}-devel-ubuntu16.04
+FROM nvidia/cuda:12.4.0-cudnn-devel-ubuntu22.04
 
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
 
-# install basics
-RUN apt-get update -y \
- && apt-get install -y apt-utils git curl ca-certificates bzip2 cmake tree htop bmon iotop g++
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    ca-certificates \
+    build-essential \
+    cmake \
+    ninja-build \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Miniconda
-RUN curl -so /miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && chmod +x /miniconda.sh \
- && /miniconda.sh -b -p /miniconda \
- && rm /miniconda.sh
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-ENV PATH=/miniconda/bin:$PATH
+# Set working directory
+WORKDIR /workspace
 
-# Create a Python 3.6 environment
-RUN /miniconda/bin/conda install -y conda-build \
- && /miniconda/bin/conda create -y --name py36 python=3.6.7 \
- && /miniconda/bin/conda clean -ya
+# Copy project files
+COPY pyproject.toml uv.lock .python-version ./
 
-ENV CONDA_DEFAULT_ENV=py36
-ENV CONDA_PREFIX=/miniconda/envs/$CONDA_DEFAULT_ENV
-ENV PATH=$CONDA_PREFIX/bin:$PATH
-ENV CONDA_AUTO_UPDATE_CONDA=false
+# Install Python and dependencies + Jupyter
+RUN uv python install 3.13 && \
+    uv sync --frozen && \
+    uv add jupyterlab notebook
 
-RUN conda install -y ipython
-RUN pip install requests ninja yacs cython matplotlib jupyter
+# Copy source code
+COPY . .
 
-# Install PyTorch 1.0 Nightly and OpenCV
-RUN conda install -y pytorch-nightly -c pytorch \
- && conda install -y opencv -c menpo \
- && conda clean -ya
+# Build C++ extensions with CUDA
+ENV FORCE_CUDA=1
+RUN uv run python setup.py build_ext --inplace
 
-WORKDIR /root
-
-USER root
-
-RUN mkdir /notebooks
-
+# Create notebooks directory
+RUN mkdir -p /notebooks
 WORKDIR /notebooks
 
-# Install TorchVision master
-RUN git clone https://github.com/pytorch/vision.git \
- && cd vision \
- && python setup.py install
+# Expose Jupyter port
+EXPOSE 8888
 
-# install pycocotools
-RUN git clone https://github.com/cocodataset/cocoapi.git \
- && cd cocoapi/PythonAPI \
- && python setup.py build_ext install
-
-# install PyTorch Detection
-RUN git clone https://github.com/facebookresearch/maskrcnn-benchmark.git \
- && cd maskrcnn-benchmark \
- && python setup.py build develop
-
-RUN jupyter notebook --generate-config
-
-ENV CONFIG_PATH="/root/.jupyter/jupyter_notebook_config.py"
-
-COPY "jupyter_notebook_config.py" ${CONFIG_PATH}
-
-ENTRYPOINT ["sh", "-c", "jupyter notebook --allow-root -y --no-browser --ip=0.0.0.0 --config=${CONFIG_PATH}"]
+# Start Jupyter
+CMD ["uv", "run", "jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]

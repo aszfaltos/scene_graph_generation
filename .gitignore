@@ -7,3 +7,12 @@ build/
 third_party
 **/output/
 *.pdf
+
+# uv / Python environment
+.venv/
+
+# IDE
+.claude*
+.*cache*
+.vscode/
+.idea/
