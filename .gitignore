@@ -1,5 +1,6 @@
 datasets/
 checkpoints/
+models/
 **/__pycache__/
 pysgg.egg-info/
 build/
@@ -7,5 +8,12 @@ build/
 third_party
 **/output/
 *.pdf
-models/
-.*claude*
+
+# uv / Python environment
+.venv/
+
+# IDE
+.claude*
+.*cache*
+.vscode/
+.idea/

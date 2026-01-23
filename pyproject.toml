@@ -1,0 +1,70 @@
+[project]
+name = "pysgg"
+version = "0.1.0"
+description = "A Toolkit for Scene Graph Generation"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Rongjie Li" },
+    { name = "Songyang Zhang" },
+]
+dependencies = [
+    "torch>=2.5.0",
+    "torchvision>=0.20.0",
+    "numpy>=1.26.0",
+    "scipy>=1.14.0",
+    "h5py>=3.12.0",
+    "matplotlib>=3.9.0",
+    "tqdm>=4.67.0",
+    "opencv-python>=4.10.0",
+    "yacs>=0.1.8",
+    "cython>=3.0.0",
+    "ninja>=1.11.0",
+    "overrides>=7.7.0",
+    "scikit-learn>=1.5.0",
+    "tensorboardx>=2.6.0",
+    "termcolor>=2.5.0",
+    "graphviz>=0.20.0",
+    "pycocotools>=2.0.8",
+    "gensim>=4.4.0",
+    "transformers>=4.40.0",
+    "requests>=2.31.0",
+    "sentence-transformers>=2.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython>=8.29.0",
+    "ipdb>=0.13.0",
+    "pytest>=8.3.0",
+    "gpustat>=1.1.0",
+    "gitpython>=3.1.0",
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu124", marker = "sys_platform == 'linux'" },
+    { index = "pypi", marker = "sys_platform == 'darwin'" },
+    { index = "pytorch-cu124", marker = "sys_platform == 'win32'" },
+]
+torchvision = [
+    { index = "pytorch-cu124", marker = "sys_platform == 'linux'" },
+    { index = "pypi", marker = "sys_platform == 'darwin'" },
+    { index = "pytorch-cu124", marker = "sys_platform == 'win32'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[build-system]
+requires = ["setuptools>=75.0.0", "wheel", "torch>=2.5.0", "ninja"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["configs", "tests", "third_party"]

@@ -42,8 +42,56 @@ from pysgg.modeling.roi_heads.relation_head.loss import RelationLossComputation
 from pysgg.modeling.roi_heads.relation_head.utils_motifs import (
     encode_box_info,
 )
-#from util.load_word2vec import obj_edge_vectors
+from util.load_word2vec import obj_edge_vectors as obj_edge_vectors_word2vec
 from util.load_bert import obj_edge_vectors_bert
+from util.load_minilm import obj_edge_vectors_minilm
+from pysgg.modeling.roi_heads.relation_head.utils_motifs import obj_edge_vectors as obj_edge_vectors_glove
+
+
+EMBEDDING_DIMS = {
+    'word2vec': 300,
+    'bert': 768,
+    'minilm': 384,
+    'glove': 300,
+}
+
+
+def get_embed_dim(args):
+    """
+    Get the embedding dimension based on the configured embedding type.
+
+    :param args: Arguments containing embedding_type
+    :return: Embedding dimension (int)
+    """
+    embedding_type = getattr(args, 'embedding_type', 'bert')
+    if embedding_type not in EMBEDDING_DIMS:
+        raise ValueError(f"Unknown embedding type: {embedding_type}. "
+                         f"Supported types: {list(EMBEDDING_DIMS.keys())}")
+    return EMBEDDING_DIMS[embedding_type]
+
+
+def get_obj_embed_vectors(obj_classes, args, embed_dim):
+    """
+    Load object embedding vectors based on the configured embedding type.
+
+    :param obj_classes: List of object class names
+    :param args: Arguments containing embedding_type and directory paths
+    :param embed_dim: Expected embedding dimension
+    :return: Tensor of shape (len(obj_classes), embed_dim)
+    """
+    embedding_type = getattr(args, 'embedding_type', 'bert')
+
+    if embedding_type == 'word2vec':
+        return obj_edge_vectors_word2vec(obj_classes, wv_dir=args.word2vec_dir, wv_dim=embed_dim)
+    elif embedding_type == 'bert':
+        return obj_edge_vectors_bert(obj_classes, wv_dir=args.bert_dir, wv_dim=embed_dim)
+    elif embedding_type == 'minilm':
+        return obj_edge_vectors_minilm(obj_classes, wv_dir=args.minilm_dir, wv_dim=embed_dim)
+    elif embedding_type == 'glove':
+        return obj_edge_vectors_glove(obj_classes, wv_dir=args.glove_dir, wv_dim=embed_dim)
+    else:
+        raise ValueError(f"Unknown embedding type: {embedding_type}. "
+                         f"Supported types: word2vec, bert, minilm, glove")
 from pysgg.modeling.roi_heads.relation_head.utils_relation import (
     get_box_info,
     get_box_pair_info,
@@ -378,7 +426,7 @@ class RelationProposalModel(nn.Module):
         super(RelationProposalModel, self).__init__()
         self.args = args
         self.num_obj_classes = 151
-        self.embed_dim = 768
+        self.embed_dim = get_embed_dim(args)
         self.geometry_feat_dim = 128
         self.roi_feat_dim = 4096
         self.hidden_dim = 512
@@ -387,15 +435,7 @@ class RelationProposalModel(nn.Module):
         statistics = get_dataset_statistics(args)
         obj_classes, rel_classes = statistics["obj_classes"], statistics["rel_classes"]
 
-        # obj_embed_vecs = obj_edge_vectors(
-        #     obj_classes, wv_dir=args.glove_dir, wv_dim=self.embed_dim
-        # )
-        # obj_embed_vecs = obj_edge_vectors(
-        #     obj_classes, wv_dir=args.word2vec_dir, wv_dim=self.embed_dim
-        # )
-        obj_embed_vecs = obj_edge_vectors_bert(
-            obj_classes, wv_dir=args.bert_dir, wv_dim=self.embed_dim
-        )
+        obj_embed_vecs = get_obj_embed_vectors(obj_classes, args, self.embed_dim)
         self.obj_sem_embed = nn.Embedding(self.num_obj_classes, self.embed_dim)
 
         with torch.no_grad():
@@ -648,16 +688,14 @@ class PairwiseFeatureExtractor(nn.Module):
         # word embedding
         # add language prior representation according to the prediction distribution
         # of objects
-        self.embed_dim = 768
+        self.embed_dim = get_embed_dim(args)
         self.obj_dim = in_channels
         self.hidden_dim = 512
         self.pooling_dim = 2048
 
         self.word_embed_feats_on = True
         if self.word_embed_feats_on:
-            #obj_embed_vecs = obj_edge_vectors(self.obj_classes, wv_dir=args.glove_dir, wv_dim=self.embed_dim)
-            #obj_embed_vecs = obj_edge_vectors(self.obj_classes, wv_dir=args.word2vec_dir, wv_dim=self.embed_dim)
-            obj_embed_vecs = obj_edge_vectors_bert(self.obj_classes, wv_dir=args.bert_dir, wv_dim=self.embed_dim)
+            obj_embed_vecs = get_obj_embed_vectors(self.obj_classes, args, self.embed_dim)
             self.obj_embed_on_prob_dist = nn.Embedding(self.num_obj_classes, self.embed_dim)
             self.obj_embed_on_pred_label = nn.Embedding(self.num_obj_classes, self.embed_dim)
             with torch.no_grad():
@@ -847,7 +885,7 @@ class RelAwareRelFeature(nn.Module):
         self.predictor_type = ("hybrid")
         #物体类别数量为151
         self.num_obj_classes = 151
-        self.embed_dim = 768
+        self.embed_dim = get_embed_dim(args)
         self.geometry_feat_dim = 128
         self.roi_feat_dim = 4096
         self.hidden_dim = 512
@@ -856,15 +894,7 @@ class RelAwareRelFeature(nn.Module):
         obj_classes, rel_classes = statistics["obj_classes"], statistics["rel_classes"]
 
         # obj_embed_vecs = obj_edge_vectors(
-        #     obj_classes, wv_dir=args.glove_dir, wv_dim=self.embed_dim
-        # )
-        # obj_embed_vecs = obj_edge_vectors(
-        #     obj_classes, wv_dir=args.word2vec_dir, wv_dim=self.embed_dim
-        # )
-        #物体的语义嵌入
-        obj_embed_vecs = obj_edge_vectors_bert(
-            obj_classes, wv_dir=args.bert_dir, wv_dim=self.embed_dim
-        )
+        obj_embed_vecs = get_obj_embed_vectors(obj_classes, args, self.embed_dim)
         self.obj_sem_embed = nn.Embedding(self.num_obj_classes, self.embed_dim)
 
         with torch.no_grad():

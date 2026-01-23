@@ -12,7 +12,7 @@ import gensim.downloader as api
 
 # 解压 .bin.gz 文件（如果尚未解压）
 
-bin_path = "/home/p_zhuzy/p_zhu/PySGG-main/datasets/vg/stanford_spilt/word2vec/GoogleNews-vectors-negative300.bin"
+bin_path = "models/word2vec/GoogleNews-vectors-negative300.bin"
 
 
 # 加载模型
@@ -119,7 +119,7 @@ def obj_edge_vectors(names, wv_dir, wv_type='GoogleNews-vectors-negative300', wv
     return vectors
 
 # obj_classes=["cat","dog"]
-# word2vec_dir="/home/p_zhuzy/p_zhu/PySGG-main/datasets/vg/stanford_spilt/word2vec"
+# word2vec_dir="models/word2vec"
 
 # if __name__== "__main__":
 #     obj_embed_vecs = obj_edge_vectors(
