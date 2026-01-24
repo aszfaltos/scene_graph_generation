@@ -162,12 +162,25 @@ def train(cfg, local_rank, distributed, logger):
         # Otherwise apply loss scaling for mixed-precision recipe
         # with amp.scale_loss(losses, optimizer) as scaled_losses:
         #     scaled_losses.backward()
+
+        # Check for NaN loss before backward
+        if torch.isnan(losses) or torch.isinf(losses):
+            logger.warning(f"Skipping iteration {iteration} due to NaN/Inf loss")
+            optimizer.zero_grad()
+            continue
+
         if scaler is not None:
             scaler.scale(losses).backward()
+            # Unscale before clipping
+            scaler.unscale_(optimizer)
+            # Gradient clipping
+            torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.SOLVER.CLIP_NORM)
             scaler.step(optimizer)
             scaler.update()
         else:
             losses.backward()
+            # Gradient clipping
+            torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.SOLVER.CLIP_NORM)
             optimizer.step()
         scheduler.step()
         batch_time = time.time() - end

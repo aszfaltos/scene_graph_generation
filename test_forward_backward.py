@@ -4,11 +4,14 @@ Test script for running 1 forward + backward pass on VRD IMP models.
 Validates that model can train on 128 samples across 2 GPUs.
 
 Usage:
-    # Single GPU (128 samples on 1 GPU)
+    # Single GPU training test (128 samples on 1 GPU)
     python test_forward_backward.py --config-file configs/e2e_relIMP_vrd_word2vec_pce.yaml
 
-    # Multi-GPU (64 samples per GPU, 2 GPUs)
+    # Multi-GPU training test (64 samples per GPU, 2 GPUs)
     torchrun --nproc_per_node=2 test_forward_backward.py --config-file configs/e2e_relIMP_vrd_word2vec_pce.yaml
+
+    # Evaluation test (inference mode)
+    python test_forward_backward.py --config-file configs/e2e_relIMP_vrd_word2vec_pce.yaml --mode eval
 """
 
 import argparse
@@ -29,6 +32,7 @@ from pysgg.utils.comm import synchronize, get_rank, get_world_size
 from pysgg.utils.logger import setup_logger
 from pysgg.utils.miscellaneous import mkdir
 from pysgg.engine.trainer import reduce_loss_dict
+from pysgg.engine.inference import inference
 
 # Seeding for reproducibility
 SEED = 42
@@ -57,6 +61,87 @@ def count_parameters(model):
     return trainable, total
 
 
+def run_eval_test(cfg, model, device, distributed, local_rank, num_gpus, logger, args):
+    """Run evaluation/inference test on a few samples."""
+    from pysgg.utils.comm import synchronize
+
+    logger.info("-" * 40)
+    logger.info("Running EVALUATION test...")
+    logger.info("-" * 40)
+
+    # Wrap model with DDP if distributed
+    if distributed:
+        model = torch.nn.parallel.DistributedDataParallel(
+            model,
+            device_ids=[local_rank],
+            output_device=local_rank,
+            broadcast_buffers=False,
+            find_unused_parameters=True,
+        )
+
+    # Set model to eval mode
+    model.eval()
+
+    # Create test data loader
+    logger.info("Creating test data loader...")
+    test_data_loaders = make_data_loader(
+        cfg,
+        mode="test",
+        is_distributed=distributed,
+    )
+
+    # Run inference on a limited number of samples
+    torch.cuda.reset_peak_memory_stats(device)
+    eval_start = time.time()
+
+    with torch.no_grad():
+        for data_loader in test_data_loaders:
+            sample_count = 0
+            max_samples = args.total_samples
+
+            for batch_idx, (images, targets, image_ids) in enumerate(data_loader):
+                images = images.to(device)
+                targets = [t.to(device) for t in targets]
+
+                # Run forward pass (inference)
+                with torch.cuda.amp.autocast():
+                    output = model(images)
+
+                sample_count += len(targets)
+                logger.info(f"Processed batch {batch_idx + 1}: {sample_count} samples")
+
+                if sample_count >= max_samples:
+                    break
+
+    eval_time = time.time() - eval_start
+
+    # Memory stats
+    max_mem = 0.0
+    if torch.cuda.is_available():
+        max_mem = torch.cuda.max_memory_allocated(device) / 1024**3
+        logger.info(f"Peak GPU memory: {max_mem:.2f} GB")
+
+    # Summary
+    logger.info("=" * 60)
+    logger.info("EVAL TEST PASSED!")
+    logger.info("=" * 60)
+    logger.info(f"Config: {args.config_file}")
+    logger.info(f"Samples evaluated: {sample_count}")
+    logger.info(f"Evaluation time: {eval_time:.3f}s")
+    logger.info(f"Peak memory: {max_mem:.2f} GB")
+    logger.info("=" * 60)
+
+    # Print memory for shell script parsing
+    print(f"GPU_MEMORY_GB:{max_mem:.2f}")
+
+    # Cleanup
+    if distributed:
+        import torch.distributed as dist
+        dist.destroy_process_group()
+
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="Test forward/backward pass for VRD IMP models")
     parser.add_argument(
@@ -71,6 +156,13 @@ def main():
         type=int,
         default=128,
         help="Total number of samples to process (default: 128)",
+    )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["train", "eval"],
+        default="train",
+        help="Test mode: 'train' for forward/backward pass, 'eval' for inference (default: train)",
     )
     parser.add_argument(
         "opts",
@@ -102,6 +194,8 @@ def main():
     cfg.defrost()
     cfg.SOLVER.IMS_PER_BATCH = samples_per_gpu
     cfg.OUTPUT_DIR = "checkpoints/test_forward_backward"
+    # Disable multiprocessing in data loader (Python 3.13 compatibility)
+    cfg.DATALOADER.NUM_WORKERS = 0
     cfg.freeze()
 
     # Setup output and logger
@@ -149,6 +243,10 @@ def main():
         logger.info(f"Loading pretrained detector from: {cfg.MODEL.PRETRAINED_DETECTOR_CKPT}")
         checkpointer = DetectronCheckpointer(cfg, model, save_dir=output_dir)
         checkpointer.load(cfg.MODEL.PRETRAINED_DETECTOR_CKPT, with_optim=False, load_mapping=load_mapping)
+
+    # Branch based on mode
+    if args.mode == "eval":
+        return run_eval_test(cfg, model, device, distributed, local_rank, num_gpus, logger, args)
 
     # Build optimizer
     logger.info("Building optimizer...")
@@ -285,6 +383,9 @@ def main():
     if torch.cuda.is_available():
         logger.info(f"Peak memory per GPU: {max_mem:.2f} GB")
     logger.info("=" * 60)
+
+    # Print memory for shell script parsing
+    print(f"GPU_MEMORY_GB:{max_mem:.2f}")
 
     # Cleanup
     if distributed:

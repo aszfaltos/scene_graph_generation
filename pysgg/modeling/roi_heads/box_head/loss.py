@@ -61,6 +61,10 @@ class FastRCNNLossComputation(object):
         labels = cat([proposal.get_field("labels") for proposal in proposals], dim=0)
         regression_targets = cat([proposal.get_field("regression_targets") for proposal in proposals], dim=0)
 
+        # Handle empty proposals case
+        if labels.numel() == 0:
+            return class_logits.sum() * 0, box_regression.sum() * 0
+
         classification_loss = F.cross_entropy(class_logits, labels.long())
 
         # get indices that correspond to the regression targets for

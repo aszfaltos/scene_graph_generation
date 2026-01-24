@@ -26,6 +26,9 @@ def evaluate(cfg, dataset, predictions, output_folder, logger, **kwargs):
         return voc_evaluation(**args)
     elif isinstance(dataset, datasets.VGDataset):
         return vg_evaluation(**args)
+    elif isinstance(dataset, datasets.VRDDataset):
+        # VRD uses the same evaluation as VG (scene graph format)
+        return vg_evaluation(**args)
     elif isinstance(dataset, datasets.OIDataset):
         return oi_evaluation(**args)
     else:

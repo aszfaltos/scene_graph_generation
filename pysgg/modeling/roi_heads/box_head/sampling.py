@@ -32,6 +32,13 @@ class FastRCNNSampling(object):
         self.box_coder = box_coder
 
     def match_targets_to_proposals(self, proposal, target):
+        # Handle empty proposals gracefully
+        if len(proposal) == 0:
+            # Return empty matched targets with required fields
+            empty_target = target[[]]  # Empty BoxList with same structure
+            empty_target.add_field("matched_idxs", torch.empty(0, dtype=torch.int64, device=target.bbox.device))
+            return empty_target
+
         match_quality_matrix = boxlist_iou(target, proposal)
         matched_idxs = self.proposal_matcher(match_quality_matrix)
         # Fast RCNN only need "labels" field for selecting the targets

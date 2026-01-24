@@ -110,6 +110,14 @@ class ROIBoxHead(torch.nn.Module):
             with torch.no_grad():
                 proposals = self.samp_processor.subsample(proposals, targets)
 
+            # Handle edge case where all proposals are empty after subsampling
+            total_proposals = sum(len(p) for p in proposals)
+            if total_proposals == 0:
+                # Return zero losses to avoid NaN
+                device = features[0].device
+                zero_loss = torch.tensor(0.0, device=device, requires_grad=True)
+                return None, proposals, dict(loss_classifier=zero_loss, loss_box_reg=zero_loss)
+
         # extract features that will be fed to the final classifier. The
         # feature_extractor generally corresponds to the pooler + heads
         x = self.feature_extractor(features, proposals)

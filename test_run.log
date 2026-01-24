@@ -1,0 +1,1985 @@
+Testing all VRD IMP configs...
+==============================
+
+Testing: configs/e2e_relIMP_vrd_no_semantics.yaml
+----------------------------------------
+[01/24 11:26:49 test_forward_backward]: ============================================================
+[01/24 11:26:49 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:26:49 test_forward_backward]: ============================================================
+[01/24 11:26:49 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_no_semantics.yaml
+[01/24 11:26:49 test_forward_backward]: Number of GPUs: 1
+[01/24 11:26:49 test_forward_backward]: Total samples: 64
+[01/24 11:26:49 test_forward_backward]: Samples per GPU: 64
+[01/24 11:26:49 test_forward_backward]: Distributed: False
+[01/24 11:26:49 test_forward_backward]: ============================================================
+[01/24 11:26:49 test_forward_backward]: Building model...
+[01/24 11:26:54 test_forward_backward]: Model parameters: 172.42M trainable / 333.14M total
+[01/24 11:26:54 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:26:55 test_forward_backward]: Building optimizer...
+[01/24 11:26:55 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:26:55 test_forward_backward]: Loading batch...
+[01/24 11:26:57 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:26:57 test_forward_backward]: ----------------------------------------
+[01/24 11:26:57 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[01/24 11:27:01 test_forward_backward]: Forward pass completed in 4.287s
+[01/24 11:27:01 test_forward_backward]: Total loss: 1.2111
+[01/24 11:27:01 test_forward_backward]:   loss_rel: 1.2111
+[01/24 11:27:01 test_forward_backward]: ----------------------------------------
+[01/24 11:27:01 test_forward_backward]: Starting BACKWARD pass...
+[01/24 11:27:02 test_forward_backward]: Backward pass completed in 0.181s
+[01/24 11:27:02 test_forward_backward]: ----------------------------------------
+[01/24 11:27:02 test_forward_backward]: Applying gradients...
+[01/24 11:27:02 test_forward_backward]: ---Total norm 2.60935 clip coef 1.91619-----------------
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.weight: 0.255115, (torch.Size([256, 1024, 3, 3]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.bias: 0.000798, (torch.Size([256]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.weight: 1.394712, (torch.Size([4096, 12544]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.bias: 0.001419, (torch.Size([4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.weight: 1.132438, (torch.Size([4096, 4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.bias: 0.002749, (torch.Size([4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.weight: 0.007106, (torch.Size([128, 2, 7, 7]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.bias: 0.001354, (torch.Size([128]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.weight: 0.000407, (torch.Size([128]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.bias: 0.000385, (torch.Size([128]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.weight: 0.024561, (torch.Size([256, 128, 3, 3]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.bias: 0.000440, (torch.Size([256]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.weight: 0.000433, (torch.Size([256]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.bias: 0.001407, (torch.Size([256]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.weight: 0.272921, (torch.Size([4096, 12544]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.bias : 0.000801, (torch.Size([4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.weight: 0.330377, (torch.Size([4096, 4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.bias : 0.001654, (torch.Size([4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.weight: 0.861456, (torch.Size([2048, 4096]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.bias: 0.004959, (torch.Size([2048]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.weight: 0.013412, (torch.Size([1024, 4608]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.bias: 0.000214, (torch.Size([1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.weight: 0.000271, (torch.Size([32, 9]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.bias: 0.000000, (torch.Size([32]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.weight: 0.000058, (torch.Size([32]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.bias: 0.000156, (torch.Size([32]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.weight: 0.000453, (torch.Size([128, 32]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.bias: 0.000147, (torch.Size([128]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.weight: 0.002902, (torch.Size([512, 32]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.bias: 0.000869, (torch.Size([512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.weight: 0.005645, (torch.Size([1024, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.bias: 0.001734, (torch.Size([1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.weight: 0.006321, (torch.Size([2048, 1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.bias: 0.002693, (torch.Size([2048]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.weight: 0.092778, (torch.Size([512, 4224]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.bias: 0.001578, (torch.Size([512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.weight: 0.283611, (torch.Size([2048, 4608]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.bias: 0.004588, (torch.Size([2048]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.weight: 0.325324, (torch.Size([512, 2048]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.bias: 0.008368, (torch.Size([512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.weight: 0.709265, (torch.Size([512, 2048]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.bias: 0.005013, (torch.Size([512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_ih: 0.972799, (torch.Size([1536, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_hh: 0.202951, (torch.Size([1536, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_ih: 0.082703, (torch.Size([1536]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_hh: 0.042651, (torch.Size([1536]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_ih: 0.638519, (torch.Size([1536, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_hh: 0.020657, (torch.Size([1536, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_ih: 0.019787, (torch.Size([1536]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_hh: 0.010409, (torch.Size([1536]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.weight: 0.020728, (torch.Size([1, 1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.bias: 0.002188, (torch.Size([1]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.weight: 0.022935, (torch.Size([1, 1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.bias: 0.002464, (torch.Size([1]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.weight: 0.006722, (torch.Size([1, 1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.bias: 0.000759, (torch.Size([1]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.weight: 0.007205, (torch.Size([1, 1024]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.bias: 0.000820, (torch.Size([1]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.weight: 0.659566, (torch.Size([71, 512]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.bias  : 0.185261, (torch.Size([71]))
+[01/24 11:27:02 test_forward_backward]: roi_heads.relation.predictor.freq_bias.obj_baseline.weight: 0.126394, (torch.Size([10201, 71]))
+[01/24 11:27:02 test_forward_backward]: -------------------------------
+[01/24 11:27:02 test_forward_backward]: Gradient application completed in 0.045s
+[01/24 11:27:02 test_forward_backward]: ----------------------------------------
+[01/24 11:27:02 test_forward_backward]: Memory Statistics:
+[01/24 11:27:02 test_forward_backward]:   Peak GPU memory: 17.23 GB
+[01/24 11:27:02 test_forward_backward]:   Current GPU memory: 3.00 GB
+[01/24 11:27:02 test_forward_backward]: ============================================================
+[01/24 11:27:02 test_forward_backward]: TEST PASSED!
+[01/24 11:27:02 test_forward_backward]: ============================================================
+[01/24 11:27:02 test_forward_backward]: Config: configs/e2e_relIMP_vrd_no_semantics.yaml
+[01/24 11:27:02 test_forward_backward]: GPUs: 1
+[01/24 11:27:02 test_forward_backward]: Total samples: 64
+[01/24 11:27:02 test_forward_backward]: Forward time: 4.287s
+[01/24 11:27:02 test_forward_backward]: Backward time: 0.181s
+[01/24 11:27:02 test_forward_backward]: Optimizer step time: 0.045s
+[01/24 11:27:02 test_forward_backward]: Total time: 4.513s
+[01/24 11:27:02 test_forward_backward]: Total loss: 1.2111
+[01/24 11:27:02 test_forward_backward]: Peak memory per GPU: 17.23 GB
+[01/24 11:27:02 test_forward_backward]: ============================================================
+PASSED: configs/e2e_relIMP_vrd_no_semantics.yaml
+
+Testing: configs/e2e_relIMP_vrd_glove.yaml
+----------------------------------------
+[01/24 11:27:08 test_forward_backward]: ============================================================
+[01/24 11:27:08 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:27:08 test_forward_backward]: ============================================================
+[01/24 11:27:08 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_glove.yaml
+[01/24 11:27:08 test_forward_backward]: Number of GPUs: 1
+[01/24 11:27:08 test_forward_backward]: Total samples: 64
+[01/24 11:27:08 test_forward_backward]: Samples per GPU: 64
+[01/24 11:27:08 test_forward_backward]: Distributed: False
+[01/24 11:27:08 test_forward_backward]: ============================================================
+[01/24 11:27:08 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:27:13 test_forward_backward]: Model parameters: 173.18M trainable / 333.90M total
+[01/24 11:27:13 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:27:14 test_forward_backward]: Building optimizer...
+[01/24 11:27:14 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:27:15 test_forward_backward]: Loading batch...
+[01/24 11:27:17 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:27:17 test_forward_backward]: ----------------------------------------
+[01/24 11:27:17 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[01/24 11:27:21 test_forward_backward]: Forward pass completed in 4.143s
+[01/24 11:27:21 test_forward_backward]: Total loss: 1.0505
+[01/24 11:27:21 test_forward_backward]:   loss_rel: 1.0505
+[01/24 11:27:21 test_forward_backward]: ----------------------------------------
+[01/24 11:27:21 test_forward_backward]: Starting BACKWARD pass...
+[01/24 11:27:21 test_forward_backward]: Backward pass completed in 0.185s
+[01/24 11:27:21 test_forward_backward]: ----------------------------------------
+[01/24 11:27:21 test_forward_backward]: Applying gradients...
+[01/24 11:27:21 test_forward_backward]: ---Total norm 0.67234 clip coef 7.43667-----------------
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.weight: 0.100240, (torch.Size([256, 1024, 3, 3]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.bias: 0.000215, (torch.Size([256]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.weight: 0.416444, (torch.Size([4096, 12544]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.bias: 0.000355, (torch.Size([4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.weight: 0.294431, (torch.Size([4096, 4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.bias: 0.000651, (torch.Size([4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.weight: 0.004640, (torch.Size([128, 2, 7, 7]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.bias: 0.000910, (torch.Size([128]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.weight: 0.000251, (torch.Size([128]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.bias: 0.000136, (torch.Size([128]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.weight: 0.014520, (torch.Size([256, 128, 3, 3]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.bias: 0.000190, (torch.Size([256]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.weight: 0.000237, (torch.Size([256]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.bias: 0.000338, (torch.Size([256]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.weight: 0.097526, (torch.Size([4096, 12544]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.bias : 0.000171, (torch.Size([4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.weight: 0.078802, (torch.Size([4096, 4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.bias : 0.000323, (torch.Size([4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_prob_dist.weight: 0.000036, (torch.Size([101, 200]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_pred_label.weight: 0.000125, (torch.Size([101, 200]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.weight: 0.205744, (torch.Size([2048, 4096]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.bias: 0.001080, (torch.Size([2048]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.weight: 0.004041, (torch.Size([1024, 4808]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.bias: 0.000050, (torch.Size([1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.weight: 0.000080, (torch.Size([32, 9]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.bias: 0.000000, (torch.Size([32]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.weight: 0.000020, (torch.Size([32]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.bias: 0.000025, (torch.Size([32]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.weight: 0.000116, (torch.Size([128, 32]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.bias: 0.000025, (torch.Size([128]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.weight: 0.001008, (torch.Size([512, 32]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.bias: 0.000259, (torch.Size([512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.weight: 0.001534, (torch.Size([1024, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.bias: 0.000434, (torch.Size([1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.weight: 0.001979, (torch.Size([2048, 1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.bias: 0.000595, (torch.Size([2048]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.weight: 0.018870, (torch.Size([512, 4424]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.bias: 0.000260, (torch.Size([512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.weight: 0.062454, (torch.Size([2048, 4808]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.bias: 0.000833, (torch.Size([2048]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.weight: 0.059798, (torch.Size([512, 2048]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.bias: 0.001506, (torch.Size([512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.weight: 0.170044, (torch.Size([512, 2048]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.bias: 0.001091, (torch.Size([512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_ih: 0.215965, (torch.Size([1536, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_hh: 0.041217, (torch.Size([1536, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_ih: 0.016487, (torch.Size([1536]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_hh: 0.008445, (torch.Size([1536]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_ih: 0.136742, (torch.Size([1536, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_hh: 0.005105, (torch.Size([1536, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_ih: 0.004179, (torch.Size([1536]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_hh: 0.002251, (torch.Size([1536]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.weight: 0.002522, (torch.Size([1, 1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.bias: 0.000155, (torch.Size([1]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.weight: 0.003244, (torch.Size([1, 1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.bias: 0.000329, (torch.Size([1]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.weight: 0.001106, (torch.Size([1, 1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.bias: 0.000077, (torch.Size([1]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.weight: 0.001116, (torch.Size([1, 1024]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.bias: 0.000063, (torch.Size([1]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.weight: 0.132131, (torch.Size([71, 512]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.bias  : 0.036140, (torch.Size([71]))
+[01/24 11:27:21 test_forward_backward]: roi_heads.relation.predictor.freq_bias.obj_baseline.weight: 0.024606, (torch.Size([10201, 71]))
+[01/24 11:27:21 test_forward_backward]: -------------------------------
+[01/24 11:27:21 test_forward_backward]: Gradient application completed in 0.047s
+[01/24 11:27:21 test_forward_backward]: ----------------------------------------
+[01/24 11:27:21 test_forward_backward]: Memory Statistics:
+[01/24 11:27:21 test_forward_backward]:   Peak GPU memory: 16.23 GB
+[01/24 11:27:21 test_forward_backward]:   Current GPU memory: 2.98 GB
+[01/24 11:27:21 test_forward_backward]: ============================================================
+[01/24 11:27:21 test_forward_backward]: TEST PASSED!
+[01/24 11:27:21 test_forward_backward]: ============================================================
+[01/24 11:27:21 test_forward_backward]: Config: configs/e2e_relIMP_vrd_glove.yaml
+[01/24 11:27:21 test_forward_backward]: GPUs: 1
+[01/24 11:27:21 test_forward_backward]: Total samples: 64
+[01/24 11:27:21 test_forward_backward]: Forward time: 4.143s
+[01/24 11:27:21 test_forward_backward]: Backward time: 0.185s
+[01/24 11:27:21 test_forward_backward]: Optimizer step time: 0.047s
+[01/24 11:27:21 test_forward_backward]: Total time: 4.374s
+[01/24 11:27:21 test_forward_backward]: Total loss: 1.0505
+[01/24 11:27:21 test_forward_backward]: Peak memory per GPU: 16.23 GB
+[01/24 11:27:21 test_forward_backward]: ============================================================
+PASSED: configs/e2e_relIMP_vrd_glove.yaml
+
+Testing: configs/e2e_relIMP_vrd_word2vec.yaml
+----------------------------------------
+[01/24 11:27:27 test_forward_backward]: ============================================================
+[01/24 11:27:27 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:27:27 test_forward_backward]: ============================================================
+[01/24 11:27:27 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_word2vec.yaml
+[01/24 11:27:27 test_forward_backward]: Number of GPUs: 1
+[01/24 11:27:27 test_forward_backward]: Total samples: 64
+[01/24 11:27:27 test_forward_backward]: Samples per GPU: 64
+[01/24 11:27:27 test_forward_backward]: Distributed: False
+[01/24 11:27:27 test_forward_backward]: ============================================================
+[01/24 11:27:27 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:27:34 test_forward_backward]: Model parameters: 173.18M trainable / 333.90M total
+[01/24 11:27:34 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:27:35 test_forward_backward]: Building optimizer...
+[01/24 11:27:35 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:27:36 test_forward_backward]: Loading batch...
+[01/24 11:27:38 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:27:38 test_forward_backward]: ----------------------------------------
+[01/24 11:27:38 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[01/24 11:27:42 test_forward_backward]: Forward pass completed in 4.270s
+[01/24 11:27:42 test_forward_backward]: Total loss: 1.0505
+[01/24 11:27:42 test_forward_backward]:   loss_rel: 1.0505
+[01/24 11:27:42 test_forward_backward]: ----------------------------------------
+[01/24 11:27:42 test_forward_backward]: Starting BACKWARD pass...
+[01/24 11:27:42 test_forward_backward]: Backward pass completed in 0.194s
+[01/24 11:27:42 test_forward_backward]: ----------------------------------------
+[01/24 11:27:42 test_forward_backward]: Applying gradients...
+[01/24 11:27:42 test_forward_backward]: ---Total norm 0.67234 clip coef 7.43667-----------------
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.weight: 0.100240, (torch.Size([256, 1024, 3, 3]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.bias: 0.000215, (torch.Size([256]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.weight: 0.416444, (torch.Size([4096, 12544]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.bias: 0.000355, (torch.Size([4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.weight: 0.294431, (torch.Size([4096, 4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.bias: 0.000651, (torch.Size([4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.weight: 0.004640, (torch.Size([128, 2, 7, 7]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.bias: 0.000910, (torch.Size([128]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.weight: 0.000251, (torch.Size([128]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.bias: 0.000136, (torch.Size([128]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.weight: 0.014520, (torch.Size([256, 128, 3, 3]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.bias: 0.000190, (torch.Size([256]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.weight: 0.000237, (torch.Size([256]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.bias: 0.000338, (torch.Size([256]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.weight: 0.097526, (torch.Size([4096, 12544]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.bias : 0.000171, (torch.Size([4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.weight: 0.078802, (torch.Size([4096, 4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.bias : 0.000323, (torch.Size([4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_prob_dist.weight: 0.000036, (torch.Size([101, 200]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_pred_label.weight: 0.000125, (torch.Size([101, 200]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.weight: 0.205744, (torch.Size([2048, 4096]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.bias: 0.001080, (torch.Size([2048]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.weight: 0.004041, (torch.Size([1024, 4808]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.bias: 0.000050, (torch.Size([1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.weight: 0.000080, (torch.Size([32, 9]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.bias: 0.000000, (torch.Size([32]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.weight: 0.000020, (torch.Size([32]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.bias: 0.000025, (torch.Size([32]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.weight: 0.000116, (torch.Size([128, 32]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.bias: 0.000025, (torch.Size([128]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.weight: 0.001008, (torch.Size([512, 32]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.bias: 0.000259, (torch.Size([512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.weight: 0.001534, (torch.Size([1024, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.bias: 0.000434, (torch.Size([1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.weight: 0.001979, (torch.Size([2048, 1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.bias: 0.000595, (torch.Size([2048]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.weight: 0.018870, (torch.Size([512, 4424]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.bias: 0.000260, (torch.Size([512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.weight: 0.062454, (torch.Size([2048, 4808]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.bias: 0.000833, (torch.Size([2048]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.weight: 0.059798, (torch.Size([512, 2048]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.bias: 0.001506, (torch.Size([512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.weight: 0.170044, (torch.Size([512, 2048]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.bias: 0.001091, (torch.Size([512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_ih: 0.215965, (torch.Size([1536, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_hh: 0.041217, (torch.Size([1536, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_ih: 0.016487, (torch.Size([1536]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_hh: 0.008445, (torch.Size([1536]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_ih: 0.136742, (torch.Size([1536, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_hh: 0.005105, (torch.Size([1536, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_ih: 0.004179, (torch.Size([1536]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_hh: 0.002251, (torch.Size([1536]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.weight: 0.002522, (torch.Size([1, 1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.bias: 0.000155, (torch.Size([1]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.weight: 0.003244, (torch.Size([1, 1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.bias: 0.000329, (torch.Size([1]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.weight: 0.001106, (torch.Size([1, 1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.bias: 0.000077, (torch.Size([1]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.weight: 0.001116, (torch.Size([1, 1024]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.bias: 0.000063, (torch.Size([1]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.weight: 0.132131, (torch.Size([71, 512]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.bias  : 0.036140, (torch.Size([71]))
+[01/24 11:27:42 test_forward_backward]: roi_heads.relation.predictor.freq_bias.obj_baseline.weight: 0.024606, (torch.Size([10201, 71]))
+[01/24 11:27:42 test_forward_backward]: -------------------------------
+[01/24 11:27:42 test_forward_backward]: Gradient application completed in 0.045s
+[01/24 11:27:42 test_forward_backward]: ----------------------------------------
+[01/24 11:27:42 test_forward_backward]: Memory Statistics:
+[01/24 11:27:42 test_forward_backward]:   Peak GPU memory: 16.23 GB
+[01/24 11:27:42 test_forward_backward]:   Current GPU memory: 2.98 GB
+[01/24 11:27:42 test_forward_backward]: ============================================================
+[01/24 11:27:42 test_forward_backward]: TEST PASSED!
+[01/24 11:27:42 test_forward_backward]: ============================================================
+[01/24 11:27:42 test_forward_backward]: Config: configs/e2e_relIMP_vrd_word2vec.yaml
+[01/24 11:27:42 test_forward_backward]: GPUs: 1
+[01/24 11:27:42 test_forward_backward]: Total samples: 64
+[01/24 11:27:42 test_forward_backward]: Forward time: 4.270s
+[01/24 11:27:42 test_forward_backward]: Backward time: 0.194s
+[01/24 11:27:42 test_forward_backward]: Optimizer step time: 0.045s
+[01/24 11:27:42 test_forward_backward]: Total time: 4.508s
+[01/24 11:27:42 test_forward_backward]: Total loss: 1.0505
+[01/24 11:27:42 test_forward_backward]: Peak memory per GPU: 16.23 GB
+[01/24 11:27:42 test_forward_backward]: ============================================================
+PASSED: configs/e2e_relIMP_vrd_word2vec.yaml
+
+Testing: configs/e2e_relIMP_vrd_bert.yaml
+----------------------------------------
+[01/24 11:27:48 test_forward_backward]: ============================================================
+[01/24 11:27:48 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:27:48 test_forward_backward]: ============================================================
+[01/24 11:27:48 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_bert.yaml
+[01/24 11:27:48 test_forward_backward]: Number of GPUs: 1
+[01/24 11:27:48 test_forward_backward]: Total samples: 64
+[01/24 11:27:48 test_forward_backward]: Samples per GPU: 64
+[01/24 11:27:48 test_forward_backward]: Distributed: False
+[01/24 11:27:48 test_forward_backward]: ============================================================
+[01/24 11:27:48 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:27:54 test_forward_backward]: Model parameters: 173.18M trainable / 333.90M total
+[01/24 11:27:54 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:27:55 test_forward_backward]: Building optimizer...
+[01/24 11:27:55 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:27:56 test_forward_backward]: Loading batch...
+[01/24 11:27:58 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:27:58 test_forward_backward]: ----------------------------------------
+[01/24 11:27:58 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[01/24 11:28:02 test_forward_backward]: Forward pass completed in 4.100s
+[01/24 11:28:02 test_forward_backward]: Total loss: 1.0505
+[01/24 11:28:02 test_forward_backward]:   loss_rel: 1.0505
+[01/24 11:28:02 test_forward_backward]: ----------------------------------------
+[01/24 11:28:02 test_forward_backward]: Starting BACKWARD pass...
+[01/24 11:28:02 test_forward_backward]: Backward pass completed in 0.261s
+[01/24 11:28:02 test_forward_backward]: ----------------------------------------
+[01/24 11:28:02 test_forward_backward]: Applying gradients...
+[01/24 11:28:02 test_forward_backward]: ---Total norm 0.67234 clip coef 7.43667-----------------
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.weight: 0.100240, (torch.Size([256, 1024, 3, 3]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.bias: 0.000215, (torch.Size([256]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.weight: 0.416444, (torch.Size([4096, 12544]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.bias: 0.000355, (torch.Size([4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.weight: 0.294431, (torch.Size([4096, 4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.bias: 0.000651, (torch.Size([4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.weight: 0.004640, (torch.Size([128, 2, 7, 7]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.bias: 0.000910, (torch.Size([128]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.weight: 0.000251, (torch.Size([128]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.bias: 0.000136, (torch.Size([128]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.weight: 0.014520, (torch.Size([256, 128, 3, 3]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.bias: 0.000190, (torch.Size([256]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.weight: 0.000237, (torch.Size([256]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.bias: 0.000338, (torch.Size([256]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.weight: 0.097526, (torch.Size([4096, 12544]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.bias : 0.000171, (torch.Size([4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.weight: 0.078802, (torch.Size([4096, 4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.bias : 0.000323, (torch.Size([4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_prob_dist.weight: 0.000036, (torch.Size([101, 200]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_pred_label.weight: 0.000125, (torch.Size([101, 200]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.weight: 0.205744, (torch.Size([2048, 4096]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.bias: 0.001080, (torch.Size([2048]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.weight: 0.004041, (torch.Size([1024, 4808]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.bias: 0.000050, (torch.Size([1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.weight: 0.000080, (torch.Size([32, 9]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.bias: 0.000000, (torch.Size([32]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.weight: 0.000020, (torch.Size([32]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.bias: 0.000025, (torch.Size([32]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.weight: 0.000116, (torch.Size([128, 32]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.bias: 0.000025, (torch.Size([128]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.weight: 0.001008, (torch.Size([512, 32]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.bias: 0.000259, (torch.Size([512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.weight: 0.001534, (torch.Size([1024, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.bias: 0.000434, (torch.Size([1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.weight: 0.001979, (torch.Size([2048, 1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.bias: 0.000595, (torch.Size([2048]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.weight: 0.018870, (torch.Size([512, 4424]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.bias: 0.000260, (torch.Size([512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.weight: 0.062454, (torch.Size([2048, 4808]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.bias: 0.000833, (torch.Size([2048]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.weight: 0.059798, (torch.Size([512, 2048]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.bias: 0.001506, (torch.Size([512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.weight: 0.170044, (torch.Size([512, 2048]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.bias: 0.001091, (torch.Size([512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_ih: 0.215965, (torch.Size([1536, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_hh: 0.041217, (torch.Size([1536, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_ih: 0.016487, (torch.Size([1536]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_hh: 0.008445, (torch.Size([1536]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_ih: 0.136742, (torch.Size([1536, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_hh: 0.005105, (torch.Size([1536, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_ih: 0.004179, (torch.Size([1536]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_hh: 0.002251, (torch.Size([1536]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.weight: 0.002522, (torch.Size([1, 1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.bias: 0.000155, (torch.Size([1]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.weight: 0.003244, (torch.Size([1, 1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.bias: 0.000329, (torch.Size([1]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.weight: 0.001106, (torch.Size([1, 1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.bias: 0.000077, (torch.Size([1]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.weight: 0.001116, (torch.Size([1, 1024]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.bias: 0.000063, (torch.Size([1]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.weight: 0.132131, (torch.Size([71, 512]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.bias  : 0.036140, (torch.Size([71]))
+[01/24 11:28:02 test_forward_backward]: roi_heads.relation.predictor.freq_bias.obj_baseline.weight: 0.024606, (torch.Size([10201, 71]))
+[01/24 11:28:02 test_forward_backward]: -------------------------------
+[01/24 11:28:02 test_forward_backward]: Gradient application completed in 0.046s
+[01/24 11:28:02 test_forward_backward]: ----------------------------------------
+[01/24 11:28:02 test_forward_backward]: Memory Statistics:
+[01/24 11:28:02 test_forward_backward]:   Peak GPU memory: 16.23 GB
+[01/24 11:28:02 test_forward_backward]:   Current GPU memory: 2.98 GB
+[01/24 11:28:02 test_forward_backward]: ============================================================
+[01/24 11:28:02 test_forward_backward]: TEST PASSED!
+[01/24 11:28:02 test_forward_backward]: ============================================================
+[01/24 11:28:02 test_forward_backward]: Config: configs/e2e_relIMP_vrd_bert.yaml
+[01/24 11:28:02 test_forward_backward]: GPUs: 1
+[01/24 11:28:02 test_forward_backward]: Total samples: 64
+[01/24 11:28:02 test_forward_backward]: Forward time: 4.100s
+[01/24 11:28:02 test_forward_backward]: Backward time: 0.261s
+[01/24 11:28:02 test_forward_backward]: Optimizer step time: 0.046s
+[01/24 11:28:02 test_forward_backward]: Total time: 4.407s
+[01/24 11:28:02 test_forward_backward]: Total loss: 1.0505
+[01/24 11:28:02 test_forward_backward]: Peak memory per GPU: 16.23 GB
+[01/24 11:28:02 test_forward_backward]: ============================================================
+PASSED: configs/e2e_relIMP_vrd_bert.yaml
+
+Testing: configs/e2e_relIMP_vrd_minilm.yaml
+----------------------------------------
+[01/24 11:28:08 test_forward_backward]: ============================================================
+[01/24 11:28:08 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:28:08 test_forward_backward]: ============================================================
+[01/24 11:28:08 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_minilm.yaml
+[01/24 11:28:08 test_forward_backward]: Number of GPUs: 1
+[01/24 11:28:08 test_forward_backward]: Total samples: 64
+[01/24 11:28:08 test_forward_backward]: Samples per GPU: 64
+[01/24 11:28:08 test_forward_backward]: Distributed: False
+[01/24 11:28:08 test_forward_backward]: ============================================================
+[01/24 11:28:08 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:28:14 test_forward_backward]: Model parameters: 173.18M trainable / 333.90M total
+[01/24 11:28:14 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:28:15 test_forward_backward]: Building optimizer...
+[01/24 11:28:15 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:28:15 test_forward_backward]: Loading batch...
+[01/24 11:28:17 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:28:17 test_forward_backward]: ----------------------------------------
+[01/24 11:28:17 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+[01/24 11:28:22 test_forward_backward]: Forward pass completed in 4.261s
+[01/24 11:28:22 test_forward_backward]: Total loss: 1.0505
+[01/24 11:28:22 test_forward_backward]:   loss_rel: 1.0505
+[01/24 11:28:22 test_forward_backward]: ----------------------------------------
+[01/24 11:28:22 test_forward_backward]: Starting BACKWARD pass...
+[01/24 11:28:22 test_forward_backward]: Backward pass completed in 0.206s
+[01/24 11:28:22 test_forward_backward]: ----------------------------------------
+[01/24 11:28:22 test_forward_backward]: Applying gradients...
+[01/24 11:28:22 test_forward_backward]: ---Total norm 0.67234 clip coef 7.43667-----------------
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.weight: 0.100240, (torch.Size([256, 1024, 3, 3]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.pooler.reduce_channel.0.bias: 0.000215, (torch.Size([256]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.weight: 0.416444, (torch.Size([4096, 12544]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc6.bias: 0.000355, (torch.Size([4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.weight: 0.294431, (torch.Size([4096, 4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.feature_extractor.fc7.bias: 0.000651, (torch.Size([4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.weight: 0.004640, (torch.Size([128, 2, 7, 7]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.0.bias: 0.000910, (torch.Size([128]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.weight: 0.000251, (torch.Size([128]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.2.bias: 0.000136, (torch.Size([128]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.weight: 0.014520, (torch.Size([256, 128, 3, 3]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.4.bias: 0.000190, (torch.Size([256]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.weight: 0.000237, (torch.Size([256]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.union_feature_extractor.rect_conv.6.bias: 0.000338, (torch.Size([256]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.weight: 0.097526, (torch.Size([4096, 12544]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc6.bias : 0.000171, (torch.Size([4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.weight: 0.078802, (torch.Size([4096, 4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.box_feature_extractor.fc7.bias : 0.000323, (torch.Size([4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_prob_dist.weight: 0.000036, (torch.Size([101, 200]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_embed_on_pred_label.weight: 0.000125, (torch.Size([101, 200]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.weight: 0.205744, (torch.Size([2048, 4096]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.rel_feature_up_dim.bias: 0.001080, (torch.Size([2048]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.weight: 0.004041, (torch.Size([1024, 4808]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_obj_feat_updim_fc.bias: 0.000050, (torch.Size([1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.weight: 0.000080, (torch.Size([32, 9]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.0.bias: 0.000000, (torch.Size([32]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.weight: 0.000020, (torch.Size([32]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.1.bias: 0.000025, (torch.Size([32]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.weight: 0.000116, (torch.Size([128, 32]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pos_embed.2.bias: 0.000025, (torch.Size([128]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.weight: 0.001008, (torch.Size([512, 32]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.0.bias: 0.000259, (torch.Size([512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.weight: 0.001534, (torch.Size([1024, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.spt_emb.2.bias: 0.000434, (torch.Size([1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.weight: 0.001979, (torch.Size([2048, 1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.pairwise_rel_feat_finalize_fc.0.bias: 0.000595, (torch.Size([2048]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.weight: 0.018870, (torch.Size([512, 4424]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_hidden_linear.bias: 0.000260, (torch.Size([512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.weight: 0.062454, (torch.Size([2048, 4808]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.pairwise_feature_extractor.obj_feat_aug_finalize_fc.0.bias: 0.000833, (torch.Size([2048]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.weight: 0.059798, (torch.Size([512, 2048]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_unary.bias: 0.001506, (torch.Size([512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.weight: 0.170044, (torch.Size([512, 2048]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_unary.bias: 0.001091, (torch.Size([512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_ih: 0.215965, (torch.Size([1536, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.weight_hh: 0.041217, (torch.Size([1536, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_ih: 0.016487, (torch.Size([1536]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.edge_gru.bias_hh: 0.008445, (torch.Size([1536]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_ih: 0.136742, (torch.Size([1536, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.weight_hh: 0.005105, (torch.Size([1536, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_ih: 0.004179, (torch.Size([1536]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.node_gru.bias_hh: 0.002251, (torch.Size([1536]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.weight: 0.002522, (torch.Size([1, 1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.sub_vert_w_fc.0.bias: 0.000155, (torch.Size([1]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.weight: 0.003244, (torch.Size([1, 1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.obj_vert_w_fc.0.bias: 0.000329, (torch.Size([1]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.weight: 0.001106, (torch.Size([1, 1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.out_edge_w_fc.0.bias: 0.000077, (torch.Size([1]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.weight: 0.001116, (torch.Size([1, 1024]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.context_layer.in_edge_w_fc.0.bias: 0.000063, (torch.Size([1]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.weight: 0.132131, (torch.Size([71, 512]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.rel_classifier.bias  : 0.036140, (torch.Size([71]))
+[01/24 11:28:22 test_forward_backward]: roi_heads.relation.predictor.freq_bias.obj_baseline.weight: 0.024606, (torch.Size([10201, 71]))
+[01/24 11:28:22 test_forward_backward]: -------------------------------
+[01/24 11:28:22 test_forward_backward]: Gradient application completed in 0.046s
+[01/24 11:28:22 test_forward_backward]: ----------------------------------------
+[01/24 11:28:22 test_forward_backward]: Memory Statistics:
+[01/24 11:28:22 test_forward_backward]:   Peak GPU memory: 16.23 GB
+[01/24 11:28:22 test_forward_backward]:   Current GPU memory: 2.98 GB
+[01/24 11:28:22 test_forward_backward]: ============================================================
+[01/24 11:28:22 test_forward_backward]: TEST PASSED!
+[01/24 11:28:22 test_forward_backward]: ============================================================
+[01/24 11:28:22 test_forward_backward]: Config: configs/e2e_relIMP_vrd_minilm.yaml
+[01/24 11:28:22 test_forward_backward]: GPUs: 1
+[01/24 11:28:22 test_forward_backward]: Total samples: 64
+[01/24 11:28:22 test_forward_backward]: Forward time: 4.261s
+[01/24 11:28:22 test_forward_backward]: Backward time: 0.206s
+[01/24 11:28:22 test_forward_backward]: Optimizer step time: 0.046s
+[01/24 11:28:22 test_forward_backward]: Total time: 4.512s
+[01/24 11:28:22 test_forward_backward]: Total loss: 1.0505
+[01/24 11:28:22 test_forward_backward]: Peak memory per GPU: 16.23 GB
+[01/24 11:28:22 test_forward_backward]: ============================================================
+PASSED: configs/e2e_relIMP_vrd_minilm.yaml
+
+Testing: configs/e2e_relIMP_vrd_no_semantics_pce.yaml
+----------------------------------------
+[01/24 11:28:28 test_forward_backward]: ============================================================
+[01/24 11:28:28 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:28:28 test_forward_backward]: ============================================================
+[01/24 11:28:28 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_no_semantics_pce.yaml
+[01/24 11:28:28 test_forward_backward]: Number of GPUs: 1
+[01/24 11:28:28 test_forward_backward]: Total samples: 64
+[01/24 11:28:28 test_forward_backward]: Samples per GPU: 64
+[01/24 11:28:28 test_forward_backward]: Distributed: False
+[01/24 11:28:28 test_forward_backward]: ============================================================
+[01/24 11:28:28 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:28:35 test_forward_backward]: Model parameters: 175.61M trainable / 336.33M total
+[01/24 11:28:35 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:28:36 test_forward_backward]: Building optimizer...
+[01/24 11:28:36 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:28:36 test_forward_backward]: Loading batch...
+[01/24 11:28:38 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:28:39 test_forward_backward]: ----------------------------------------
+[01/24 11:28:39 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4313x512 and 2048x512)
+E0124 11:28:44.613000 123727 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 123801) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:28:44
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 123801)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_no_semantics_pce.yaml
+
+Testing: configs/e2e_relIMP_vrd_glove_pce.yaml
+----------------------------------------
+[01/24 11:28:49 test_forward_backward]: ============================================================
+[01/24 11:28:49 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:28:49 test_forward_backward]: ============================================================
+[01/24 11:28:49 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_glove_pce.yaml
+[01/24 11:28:49 test_forward_backward]: Number of GPUs: 1
+[01/24 11:28:49 test_forward_backward]: Total samples: 64
+[01/24 11:28:49 test_forward_backward]: Samples per GPU: 64
+[01/24 11:28:49 test_forward_backward]: Distributed: False
+[01/24 11:28:49 test_forward_backward]: ============================================================
+[01/24 11:28:49 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:28:59 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:28:59 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:29:00 test_forward_backward]: Building optimizer...
+[01/24 11:29:00 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:29:01 test_forward_backward]: Loading batch...
+[01/24 11:29:03 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:29:03 test_forward_backward]: ----------------------------------------
+[01/24 11:29:03 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:29:08.953000 124296 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 124365) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:29:08
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 124365)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_glove_pce.yaml
+
+Testing: configs/e2e_relIMP_vrd_word2vec_pce.yaml
+----------------------------------------
+[01/24 11:29:13 test_forward_backward]: ============================================================
+[01/24 11:29:13 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:29:13 test_forward_backward]: ============================================================
+[01/24 11:29:13 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_word2vec_pce.yaml
+[01/24 11:29:13 test_forward_backward]: Number of GPUs: 1
+[01/24 11:29:13 test_forward_backward]: Total samples: 64
+[01/24 11:29:13 test_forward_backward]: Samples per GPU: 64
+[01/24 11:29:13 test_forward_backward]: Distributed: False
+[01/24 11:29:13 test_forward_backward]: ============================================================
+[01/24 11:29:13 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:29:22 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:29:22 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:29:23 test_forward_backward]: Building optimizer...
+[01/24 11:29:23 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:29:23 test_forward_backward]: Loading batch...
+[01/24 11:29:25 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:29:25 test_forward_backward]: ----------------------------------------
+[01/24 11:29:25 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:29:31.317000 124882 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 124947) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:29:31
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 124947)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_word2vec_pce.yaml
+
+Testing: configs/e2e_relIMP_vrd_bert_pce.yaml
+----------------------------------------
+[01/24 11:29:36 test_forward_backward]: ============================================================
+[01/24 11:29:36 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:29:36 test_forward_backward]: ============================================================
+[01/24 11:29:36 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_bert_pce.yaml
+[01/24 11:29:36 test_forward_backward]: Number of GPUs: 1
+[01/24 11:29:36 test_forward_backward]: Total samples: 64
+[01/24 11:29:36 test_forward_backward]: Samples per GPU: 64
+[01/24 11:29:36 test_forward_backward]: Distributed: False
+[01/24 11:29:36 test_forward_backward]: ============================================================
+[01/24 11:29:36 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:29:46 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:29:46 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:29:47 test_forward_backward]: Building optimizer...
+[01/24 11:29:47 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:29:48 test_forward_backward]: Loading batch...
+[01/24 11:29:50 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:29:50 test_forward_backward]: ----------------------------------------
+[01/24 11:29:50 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:29:55.809000 125437 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 125505) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:29:55
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 125505)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_bert_pce.yaml
+
+Testing: configs/e2e_relIMP_vrd_minilm_pce.yaml
+----------------------------------------
+[01/24 11:30:00 test_forward_backward]: ============================================================
+[01/24 11:30:00 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:30:00 test_forward_backward]: ============================================================
+[01/24 11:30:00 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_minilm_pce.yaml
+[01/24 11:30:00 test_forward_backward]: Number of GPUs: 1
+[01/24 11:30:00 test_forward_backward]: Total samples: 64
+[01/24 11:30:00 test_forward_backward]: Samples per GPU: 64
+[01/24 11:30:00 test_forward_backward]: Distributed: False
+[01/24 11:30:00 test_forward_backward]: ============================================================
+[01/24 11:30:00 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:30:09 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:30:09 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:30:10 test_forward_backward]: Building optimizer...
+[01/24 11:30:10 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:30:11 test_forward_backward]: Loading batch...
+[01/24 11:30:13 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:30:13 test_forward_backward]: ----------------------------------------
+[01/24 11:30:13 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:30:18.608000 126011 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 126080) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:30:18
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 126080)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_minilm_pce.yaml
+
+Testing: configs/e2e_relIMP_vrd_bert_pce_sigmoid.yaml
+----------------------------------------
+[01/24 11:30:23 test_forward_backward]: ============================================================
+[01/24 11:30:23 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:30:23 test_forward_backward]: ============================================================
+[01/24 11:30:23 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_bert_pce_sigmoid.yaml
+[01/24 11:30:23 test_forward_backward]: Number of GPUs: 1
+[01/24 11:30:23 test_forward_backward]: Total samples: 64
+[01/24 11:30:23 test_forward_backward]: Samples per GPU: 64
+[01/24 11:30:23 test_forward_backward]: Distributed: False
+[01/24 11:30:23 test_forward_backward]: ============================================================
+[01/24 11:30:23 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:30:32 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:30:32 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:30:33 test_forward_backward]: Building optimizer...
+[01/24 11:30:33 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:30:33 test_forward_backward]: Loading batch...
+[01/24 11:30:35 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:30:36 test_forward_backward]: ----------------------------------------
+[01/24 11:30:36 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:30:41.743000 126588 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 126661) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:30:41
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 126661)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_bert_pce_sigmoid.yaml
+
+Testing: configs/e2e_relIMP_vrd_bert_pce_poly.yaml
+----------------------------------------
+[01/24 11:30:46 test_forward_backward]: ============================================================
+[01/24 11:30:46 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:30:46 test_forward_backward]: ============================================================
+[01/24 11:30:46 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_bert_pce_poly.yaml
+[01/24 11:30:46 test_forward_backward]: Number of GPUs: 1
+[01/24 11:30:46 test_forward_backward]: Total samples: 64
+[01/24 11:30:46 test_forward_backward]: Samples per GPU: 64
+[01/24 11:30:46 test_forward_backward]: Distributed: False
+[01/24 11:30:46 test_forward_backward]: ============================================================
+[01/24 11:30:46 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:30:55 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:30:55 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:30:56 test_forward_backward]: Building optimizer...
+[01/24 11:30:56 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:30:57 test_forward_backward]: Loading batch...
+[01/24 11:30:59 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:30:59 test_forward_backward]: ----------------------------------------
+[01/24 11:30:59 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:31:05.053000 127160 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 127235) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:31:05
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 127235)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_bert_pce_poly.yaml
+
+Testing: configs/e2e_relIMP_vrd_word2vec_pce_sigmoid.yaml
+----------------------------------------
+[01/24 11:31:10 test_forward_backward]: ============================================================
+[01/24 11:31:10 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:31:10 test_forward_backward]: ============================================================
+[01/24 11:31:10 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_word2vec_pce_sigmoid.yaml
+[01/24 11:31:10 test_forward_backward]: Number of GPUs: 1
+[01/24 11:31:10 test_forward_backward]: Total samples: 64
+[01/24 11:31:10 test_forward_backward]: Samples per GPU: 64
+[01/24 11:31:10 test_forward_backward]: Distributed: False
+[01/24 11:31:10 test_forward_backward]: ============================================================
+[01/24 11:31:10 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:31:19 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:31:19 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:31:20 test_forward_backward]: Building optimizer...
+[01/24 11:31:20 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:31:20 test_forward_backward]: Loading batch...
+[01/24 11:31:22 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:31:22 test_forward_backward]: ----------------------------------------
+[01/24 11:31:22 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:31:28.449000 127738 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 127807) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:31:28
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 127807)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_word2vec_pce_sigmoid.yaml
+
+Testing: configs/e2e_relIMP_vrd_word2vec_pce_poly.yaml
+----------------------------------------
+[01/24 11:31:33 test_forward_backward]: ============================================================
+[01/24 11:31:33 test_forward_backward]: Test Forward/Backward Pass
+[01/24 11:31:33 test_forward_backward]: ============================================================
+[01/24 11:31:33 test_forward_backward]: Config file: configs/e2e_relIMP_vrd_word2vec_pce_poly.yaml
+[01/24 11:31:33 test_forward_backward]: Number of GPUs: 1
+[01/24 11:31:33 test_forward_backward]: Total samples: 64
+[01/24 11:31:33 test_forward_backward]: Samples per GPU: 64
+[01/24 11:31:33 test_forward_backward]: Distributed: False
+[01/24 11:31:33 test_forward_backward]: ============================================================
+[01/24 11:31:33 test_forward_backward]: Building model...
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+loading word vectors from models/glove/glove.6B.200d.pt
+__background__ -> __background__ 
+fail on __background__
+traffic light -> traffic 
+trash can -> trash 
+[01/24 11:31:42 test_forward_backward]: Model parameters: 176.37M trainable / 337.08M total
+[01/24 11:31:42 test_forward_backward]: Loading pretrained detector from: checkpoints/detection/vrd_detector/model_final.pth
+[01/24 11:31:44 test_forward_backward]: Building optimizer...
+[01/24 11:31:44 test_forward_backward]: Creating data loader...
+Loaded 3780 images, filtered 220 empty images
+[01/24 11:31:44 test_forward_backward]: Loading batch...
+[01/24 11:31:46 test_forward_backward]: Batch size on this GPU: 64
+/root/scene_graph_generation/test_forward_backward.py:191: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+[01/24 11:31:46 test_forward_backward]: ----------------------------------------
+[01/24 11:31:46 test_forward_backward]: Starting FORWARD pass...
+/root/scene_graph_generation/test_forward_backward.py:212: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/test_forward_backward.py", line 299, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/test_forward_backward.py", line 213, in main
+    loss_dict = model(images, targets, logger=logger)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/detector/generalized_rcnn.py", line 52, in forward
+    x, result, detector_losses = self.roi_heads(features, proposals, targets, logger)
+                                 ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/roi_heads.py", line 69, in forward
+    x, detections, loss_relation = self.relation(features, detections, targets, logger)
+                                   ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/relation_head.py", line 209, in forward
+    obj_refine_logits, relation_logits, add_losses = self.predictor(
+                                                     ~~~~~~~~~~~~~~^
+        proposals,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        logger,
+        ^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/roi_relation_predictors.py", line 259, in forward
+    obj_feats, rel_feats, pre_cls_logits, relatedness = self.context_layer(
+                                                        ~~~~~~~~~~~~~~~~~~^
+        roi_features, proposals, union_features, rel_pair_idxs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        rel_gt_binarys=rel_binarys, logger=logger
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/pysgg/modeling/roi_heads/relation_head/model_msg_passing.py", line 462, in forward
+    current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (4097x512 and 2048x512)
+E0124 11:31:52.114000 128307 torch/distributed/elastic/multiprocessing/api.py:869] failed (exitcode: 1) local_rank: 0 (pid: 128381) of binary: /root/scene_graph_generation/.venv/bin/python3
+Traceback (most recent call last):
+  File "/root/scene_graph_generation/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 918, in main
+    run(args)
+    ~~~^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/run.py", line 909, in run
+    elastic_launch(
+    ~~~~~~~~~~~~~~~
+        config=config,
+        ~~~~~~~~~~~~~~
+        entrypoint=cmd,
+        ~~~~~~~~~~~~~~~
+    )(*cmd_args)
+    ~^^^^^^^^^^^
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 138, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/root/scene_graph_generation/.venv/lib/python3.13/site-packages/torch/distributed/launcher/api.py", line 269, in launch_agent
+    raise ChildFailedError(
+    ...<2 lines>...
+    )
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+test_forward_backward.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-01-24_11:31:52
+  host      : c80bcd8e7a70
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 128381)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+FAILED: configs/e2e_relIMP_vrd_word2vec_pce_poly.yaml
+
+==============================
+SUMMARY
+==============================
+Passed: 5
+  ✓ configs/e2e_relIMP_vrd_no_semantics.yaml
+  ✓ configs/e2e_relIMP_vrd_glove.yaml
+  ✓ configs/e2e_relIMP_vrd_word2vec.yaml
+  ✓ configs/e2e_relIMP_vrd_bert.yaml
+  ✓ configs/e2e_relIMP_vrd_minilm.yaml
+
+Failed: 9
+  ✗ configs/e2e_relIMP_vrd_no_semantics_pce.yaml
+  ✗ configs/e2e_relIMP_vrd_glove_pce.yaml
+  ✗ configs/e2e_relIMP_vrd_word2vec_pce.yaml
+  ✗ configs/e2e_relIMP_vrd_bert_pce.yaml
+  ✗ configs/e2e_relIMP_vrd_minilm_pce.yaml
+  ✗ configs/e2e_relIMP_vrd_bert_pce_sigmoid.yaml
+  ✗ configs/e2e_relIMP_vrd_bert_pce_poly.yaml
+  ✗ configs/e2e_relIMP_vrd_word2vec_pce_sigmoid.yaml
+  ✗ configs/e2e_relIMP_vrd_word2vec_pce_poly.yaml

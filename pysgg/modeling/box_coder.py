@@ -31,13 +31,21 @@ class BoxCoder(object):
         """
 
         TO_REMOVE = 1  # TODO remove
+        EPS = 1e-6  # Small epsilon to prevent division by zero
+
         ex_widths = proposals[:, 2] - proposals[:, 0] + TO_REMOVE
         ex_heights = proposals[:, 3] - proposals[:, 1] + TO_REMOVE
+        # Clamp to minimum value to prevent division by zero
+        ex_widths = ex_widths.clamp(min=EPS)
+        ex_heights = ex_heights.clamp(min=EPS)
         ex_ctr_x = proposals[:, 0] + 0.5 * ex_widths
         ex_ctr_y = proposals[:, 1] + 0.5 * ex_heights
 
         gt_widths = reference_boxes[:, 2] - reference_boxes[:, 0] + TO_REMOVE
         gt_heights = reference_boxes[:, 3] - reference_boxes[:, 1] + TO_REMOVE
+        # Clamp to minimum value to prevent log(0)
+        gt_widths = gt_widths.clamp(min=EPS)
+        gt_heights = gt_heights.clamp(min=EPS)
         gt_ctr_x = reference_boxes[:, 0] + 0.5 * gt_widths
         gt_ctr_y = reference_boxes[:, 1] + 0.5 * gt_heights
 

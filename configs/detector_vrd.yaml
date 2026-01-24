@@ -1,0 +1,71 @@
+# Faster R-CNN detector for VRD dataset (100 object classes + background)
+# Train this first, then use the checkpoint for relation training
+INPUT:
+  MIN_SIZE_TRAIN: (600,)
+  MAX_SIZE_TRAIN: 1000
+  MIN_SIZE_TEST: 600
+  MAX_SIZE_TEST: 1000
+MODEL:
+  META_ARCHITECTURE: "GeneralizedRCNN"
+  WEIGHT: "catalog://ImageNetPretrained/FAIR/20171220/X-101-32x8d"
+  DEVICE: "cuda"
+  BACKBONE:
+    CONV_BODY: "R-101-FPN"
+  RESNETS:
+    BACKBONE_OUT_CHANNELS: 256
+    STRIDE_IN_1X1: False
+    NUM_GROUPS: 32
+    WIDTH_PER_GROUP: 8
+  RELATION_ON: False
+  ATTRIBUTE_ON: False
+  FLIP_AUG: False
+  RPN:
+    USE_FPN: True
+    ANCHOR_SIZES: (32, 64, 128, 256, 512)
+    ANCHOR_STRIDE: (4, 8, 16, 32, 64)
+    ASPECT_RATIOS: (0.23232838, 0.63365731, 1.28478321, 3.15089189)
+    PRE_NMS_TOP_N_TRAIN: 12000
+    PRE_NMS_TOP_N_TEST: 6000
+    POST_NMS_TOP_N_TRAIN: 2000
+    POST_NMS_TOP_N_TEST: 1000
+    FPN_POST_NMS_TOP_N_TRAIN: 2000
+    FPN_POST_NMS_TOP_N_TEST: 1000
+    FPN_POST_NMS_PER_BATCH: False
+    RPN_MID_CHANNEL: 256
+  ROI_HEADS:
+    USE_FPN: True
+    POSITIVE_FRACTION: 0.5
+    BG_IOU_THRESHOLD: 0.3
+    BATCH_SIZE_PER_IMAGE: 256
+    DETECTIONS_PER_IMG: 80
+  ROI_BOX_HEAD:
+    POOLER_RESOLUTION: 7
+    POOLER_SCALES: (0.25, 0.125, 0.0625, 0.03125)
+    POOLER_SAMPLING_RATIO: 2
+    FEATURE_EXTRACTOR: "FPN2MLPFeatureExtractor"
+    PREDICTOR: "FPNPredictor"
+    NUM_CLASSES: 101  # 100 VRD object classes + 1 background
+    MLP_HEAD_DIM: 4096
+DATASETS:
+  TRAIN: ("vrd_train",)
+  VAL: ("vrd_test",)
+  TEST: ("vrd_test",)
+DATALOADER:
+  NUM_WORKERS: 4
+  ASPECT_RATIO_GROUPING: True
+  SIZE_DIVISIBILITY: 32
+SOLVER:
+  BASE_LR: 0.001  # Lowered from 0.01 to prevent gradient explosion
+  WEIGHT_DECAY: 0.0001
+  MAX_ITER: 20000
+  STEPS: (12000, 16000)
+  IMS_PER_BATCH: 8
+  CHECKPOINT_PERIOD: 5000
+  WARMUP_ITERS: 1000  # Extended warmup
+  WARMUP_METHOD: "linear"
+  WARMUP_FACTOR: 0.01  # Start with even lower LR
+  CLIP_NORM: 1.0  # Add gradient clipping
+  PRE_VAL: False  # Skip validation before training (avoids proposal issues)
+  TO_VAL: True    # Enable validation during training at checkpoints
+  VAL_PERIOD: 5000
+OUTPUT_DIR: "checkpoints/detection/vrd_detector"

@@ -112,20 +112,47 @@ class RPNLossComputation(object):
         objectness, box_regression = \
                 concat_box_prediction_layers(objectness, box_regression)
 
-        objectness = objectness.squeeze()
+        # Use squeeze with dim to avoid scalar when N=1
+        objectness = objectness.squeeze(dim=-1) if objectness.dim() > 1 else objectness
 
         labels = torch.cat(labels, dim=0)
         regression_targets = torch.cat(regression_targets, dim=0)
 
-        box_loss = smooth_l1_loss(
-            box_regression[sampled_pos_inds],
-            regression_targets[sampled_pos_inds],
-            beta=1.0 / 9,
-            size_average=False,
-        ) / (sampled_inds.numel())
+        device = objectness.device
+
+        # Handle empty samples case
+        if sampled_inds.numel() == 0:
+            return objectness.sum() * 0, box_regression.sum() * 0
+
+        # Ensure labels are valid (0 or 1) for BCE loss
+        sampled_labels = labels[sampled_inds]
+        # Labels should only be 0 or 1 after sampling, but clamp to be safe
+        sampled_labels = sampled_labels.clamp(0, 1)
+
+        # Check for NaN in inputs and return zero loss if found
+        sampled_objectness = objectness[sampled_inds]
+        if torch.isnan(sampled_objectness).any() or torch.isnan(sampled_labels).any():
+            return objectness.sum() * 0, box_regression.sum() * 0
+
+        # Handle empty positive samples for box loss
+        if sampled_pos_inds.numel() == 0:
+            box_loss = box_regression.sum() * 0
+        else:
+            pos_regression = box_regression[sampled_pos_inds]
+            pos_targets = regression_targets[sampled_pos_inds]
+            # Check for NaN in regression targets
+            if torch.isnan(pos_targets).any():
+                box_loss = box_regression.sum() * 0
+            else:
+                box_loss = smooth_l1_loss(
+                    pos_regression,
+                    pos_targets,
+                    beta=1.0 / 9,
+                    size_average=False,
+                ) / (sampled_inds.numel())
 
         objectness_loss = F.binary_cross_entropy_with_logits(
-            objectness[sampled_inds], labels[sampled_inds]
+            sampled_objectness, sampled_labels
         )
 
         return objectness_loss, box_loss

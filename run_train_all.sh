@@ -2,7 +2,7 @@
 # Train and evaluate all VRD IMP Phase 1 configs
 #
 # Usage:
-#   # Train all configs with defaults (30k iterations, 2 GPUs)
+#   # Train all configs with defaults (2 GPUs per job)
 #   ./run_train_all.sh
 #
 #   # Train with custom iterations
@@ -17,9 +17,9 @@
 set -e
 
 # Defaults
-NUM_GPUS=2
 MAX_ITER=30000
-BATCH_SIZE=8
+BATCH_SIZE=12  # Per GPU, so 24 total with 2 GPUs
+NUM_GPUS=2
 OUTPUT_DIR="checkpoints/vrd_experiments"
 RESULTS_DIR="results/vrd_imp_phase1"
 
@@ -32,9 +32,6 @@ while [[ $# -gt 0 ]]; do
     case $1 in
         --quick)
             MAX_ITER=1000
-            CHECKPOINT_PERIOD=500
-            VAL_PERIOD=500
-            EXTRA_ARGS="$EXTRA_ARGS --checkpoint-period $CHECKPOINT_PERIOD --val-period $VAL_PERIOD"
             shift
             ;;
         --max-iter)
@@ -43,10 +40,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         --batch-size)
             BATCH_SIZE=$2
-            shift 2
-            ;;
-        --num-gpus)
-            NUM_GPUS=$2
             shift 2
             ;;
         --config)
@@ -72,9 +65,10 @@ done
 echo "======================================"
 echo "VRD IMP Training Pipeline"
 echo "======================================"
-echo "GPUs: $NUM_GPUS"
 echo "Max iterations: $MAX_ITER"
 echo "Batch size per GPU: $BATCH_SIZE"
+echo "Total batch size: $((BATCH_SIZE * NUM_GPUS))"
+echo "GPUs: $NUM_GPUS"
 echo "Output dir: $OUTPUT_DIR"
 echo "Results dir: $RESULTS_DIR"
 echo "======================================"
@@ -82,29 +76,76 @@ echo "======================================"
 # Create directories
 mkdir -p "$OUTPUT_DIR"
 mkdir -p "$RESULTS_DIR"
+mkdir -p "logs"
 
-# Build the command
-CMD="torchrun --nproc_per_node=$NUM_GPUS train_eval_vrd.py"
-CMD="$CMD --max-iter $MAX_ITER"
-CMD="$CMD --batch-size $BATCH_SIZE"
-CMD="$CMD --output-dir $OUTPUT_DIR"
-CMD="$CMD --results-dir $RESULTS_DIR"
-
+# Get all config files
 if [ "$TRAIN_ALL" = true ]; then
-    CMD="$CMD --all"
+    CONFIGS=(
+        "configs/e2e_relIMP_vrd_glove.yaml"
+        "configs/e2e_relIMP_vrd_glove_pce.yaml"
+        "configs/e2e_relIMP_vrd_bert.yaml"
+        "configs/e2e_relIMP_vrd_bert_pce.yaml"
+    )
 else
-    CMD="$CMD --config-file $CONFIG_FILE"
+    CONFIGS=("$CONFIG_FILE")
 fi
 
-CMD="$CMD $EXTRA_ARGS"
+# Function to run a single training job with multi-GPU
+run_training() {
+    local config=$1
+    local config_name=$(basename "$config" .yaml)
+    local log_file="logs/${config_name}.log"
 
-echo "Running: $CMD"
-echo "======================================"
+    echo ""
+    echo "======================================"
+    echo "Training: $config_name"
+    echo "Log: $log_file"
+    echo "======================================"
 
-# Run training
-$CMD
+    uv run torchrun --nproc_per_node=$NUM_GPUS tools/relation_train_net.py \
+        --config-file "$config" \
+        SOLVER.IMS_PER_BATCH $BATCH_SIZE \
+        SOLVER.MAX_ITER $MAX_ITER \
+        OUTPUT_DIR "${OUTPUT_DIR}/${config_name}" \
+        DATALOADER.NUM_WORKERS 0 \
+        $EXTRA_ARGS 2>&1 | tee "$log_file"
 
+    return $?
+}
+
+# Train all configs sequentially (each uses 2 GPUs)
+FAILED=()
+PASSED=()
+
+for config in "${CONFIGS[@]}"; do
+    if [ -f "$config" ]; then
+        if run_training "$config"; then
+            PASSED+=("$config")
+            echo "PASSED: $config"
+        else
+            FAILED+=("$config")
+            echo "FAILED: $config"
+        fi
+    else
+        echo "SKIPPING (not found): $config"
+    fi
+done
+
+echo ""
 echo "======================================"
-echo "Training complete!"
-echo "Results saved to: $RESULTS_DIR/summary.json"
+echo "TRAINING SUMMARY"
 echo "======================================"
+echo "Passed: ${#PASSED[@]}"
+for cfg in "${PASSED[@]}"; do
+    echo "  ✓ $cfg"
+done
+echo "Failed: ${#FAILED[@]}"
+for cfg in "${FAILED[@]}"; do
+    echo "  ✗ $cfg"
+done
+echo "======================================"
+echo "Results saved to: $OUTPUT_DIR"
+
+if [ ${#FAILED[@]} -gt 0 ]; then
+    exit 1
+fi

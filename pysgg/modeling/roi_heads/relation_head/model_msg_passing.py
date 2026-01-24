@@ -458,8 +458,10 @@ class IMPContext(nn.Module):
                     rel_offset += num_rel
 
             # --- Step 3: Iterative message passing ---
-            current_obj_rep = refine_obj_feats[-1]
-            current_rel_rep = F.relu(self.edge_unary(refine_rel_feats[-1])) if refine_iter > 0 else rel_rep
+            # For iter=0, use obj_rep/rel_rep (already projected to hidden_dim by obj_unary/edge_unary)
+            # For iter>0, refine_*_feats[-1] is already in hidden_dim (from GRU output)
+            current_obj_rep = refine_obj_feats[-1] if refine_iter > 0 else obj_rep
+            current_rel_rep = refine_rel_feats[-1] if refine_iter > 0 else rel_rep
 
             hx_obj = torch.zeros(obj_count, self.hidden_dim, requires_grad=False).to(device).float()
             hx_rel = torch.zeros(rel_count, self.hidden_dim, requires_grad=False).to(device).float()
